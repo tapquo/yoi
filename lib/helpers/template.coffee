@@ -1,29 +1,27 @@
 ###
 YOI
 @description  Easy (but powerful) NodeJS Server
-@version      0.8.07
 @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
 
-@namespace    lib/helper/template
+@namespace    lib/helpers/template
 ###
 "use strict"
 
 fs      = require "fs"
 jade    = require "jade"
-app     = require "../../../../config/yoi.yml"
 Cookie  = require "cookie"
-folder  = "app/templates"
+app     = require "../../../../yoi.yml"
 
 Template = (file, properties = {}, response, cookie) ->
   try
-    page = fs.readFileSync "#{folder}/#{file}.jade", "utf8"
+    page = fs.readFileSync "#{app.templates}/#{file}.jade", "utf8"
   catch exception
     try
-      page = fs.readFileSync "#{folder}/404.jade", "utf8"
+      page = fs.readFileSync "#{app.templates}/404.jade", "utf8"
     catch e
       page = "h1 404 - Not found"
 
-  properties.basedir = folder
+  properties.basedir = app.templates
   properties.layout = false
   properties.pretty = false
 

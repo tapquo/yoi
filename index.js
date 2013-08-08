@@ -2,12 +2,13 @@
 /*
     YOI
     @description  Easy (but powerful) NodeJS Server
-    @version      0.8.07
+    @version      0.8.08
     @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
 */
 "use strict";
 
 require("coffee-script");
+require("js-yaml");
 
 var Yoi = {
     // Helpers

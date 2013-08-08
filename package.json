@@ -1,25 +1,24 @@
 {
-  "name": "yoi",
-  "version": "0.8.07",
-  "description": "",
-  "author": {
-    "name": "Tapquo",
-    "site": "http://tapquo.com"},
+  "name"            : "yoi",
+  "version"         : "0.8.08",
+  "description"     : "Easy (but powerful) NodeJS Server",
+  "homepage"        : "http://yoi.tapquo.com/",
+  "keywords"        : ["util", "functional", "server", "browser"],
+  "author"          : "Javi Jimenez <javi@tapquo.com>",
+  "contributors"    : ["Inigo Gonzalez <inigo@tapquo.com>"],
   "dependencies": {
-    "coffee-script"         : "*",
-    "restify"               : "*",
-    "cookie"                : "*",
-    "cron"                  : "*",
-    "time"                  : "*",
-    "jade"                  : "*",
-    "async"                 : "*",
-    "mongoose"              : "*",
-    "redis"                 : "*",
-    "request"               : "*",
-    "js-yaml"               : "*"
-  },
-  "main": "./index.js",
-  "engines": {
-    "node": "*"
-  }
+    "coffee-script" : "*",
+    "restify"       : "*",
+    "cookie"        : "*",
+    "cron"          : "*",
+    "time"          : "*",
+    "jade"          : "*",
+    "async"         : "*",
+    "mongoose"      : "*",
+    "redis"         : "*",
+    "request"       : "*",
+    "js-yaml"       : "*" },
+  "main"            : "./index.js",
+  "engines"         : {
+    "node"          : "*" }
 }

@@ -1,7 +1,6 @@
 ###
 YOI
 @description  Easy (but powerful) NodeJS Server
-@version      0.8.07
 @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
 
 @namespace    lib/server
@@ -9,16 +8,15 @@ YOI
 "use strict"
 
 # Libraries
-yaml        = require "js-yaml"
 restify     = require "restify"
 fs          = require "fs"
 mongo       = require "./services/mongo"
 redis       = require "./services/redis"
 template    = require "./helpers/template"
 # Configuration
-app         = require "../../../config/yoi.yml"
-env         = require "../../../config/#{app.environment}.yml"
-folder      = "../../../app/"
+app         = require "../../../yoi.yml"
+env         = require "../../../environments/#{app.environment}.yml"
+folder      = "../../../"
 crons       = []
 
 Server =
@@ -34,11 +32,13 @@ Server =
     do @close
 
   assets: ->
-    for asset in app.assets
-      pattern = if asset.folder? then "/\/#{asset.folder}\/.*/" else "/#{asset.file}"
-      @srv.get pattern, restify.serveStatic
-          directory  : "app/assets"
-          maxAge     : asset.maxage or 0
+    if app.assets?
+      console.log " [ASSETS] Catching..."
+      for asset in app.assets
+        pattern = if asset.folder? then "/\/#{asset.folder}\/.*/" else "/#{asset.file}"
+        @srv.get pattern, restify.serveStatic
+            directory  : "assets/"
+            maxAge     : asset.maxage or 0
 
    middleware: ->
     @srv.use restify.queryParser()
@@ -49,12 +49,12 @@ Server =
     @srv.use _setSession
 
   services: ->
-    mongo.open connection for connection in env.mongo
+    mongo.open connection for connection in env.mongo?
     if env.redis? then redis.open env.redis.host, env.redis.port, env.redis.password
 
   endpoints: ->
     for type of app.endpoints
-      require("#{folder}/#{type}/#{endpoint}").register @srv for endpoint in app.endpoints[type]
+      require("#{folder}/endpoints/#{type}/#{endpoint}").register @srv for endpoint in app.endpoints[type]
 
   start: ->
     @srv.listen process.env.VCAP_APP_PORT or env.server.port, =>
@@ -62,7 +62,7 @@ Server =
       callback.call callback, @srv if callback?
 
       if app.crons?
-        console.log "  - [CRON] Starting..."
+        console.log " [CRONS]  Starting..."
         for cron in app.crons
           crons.push new (require("#{folder}/crons/#{cron.file}")) cron
 
@@ -83,7 +83,7 @@ Server =
       if env.mongo? then mongo.close()
       if env.redis? then redis.close()
       if app.crons?
-        console.log "  - [CRON] Stopping..."
+        console.log " [CRONS]   Stopping..."
         cron.stop() for cron in crons
 
 module.exports = Server
