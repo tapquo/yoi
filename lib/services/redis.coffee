@@ -21,11 +21,13 @@ Redis =
         password = credentials.password
     @client = redis.createClient port, host
     @client.auth password if password?
-    @client.on "error", (err) -> console.log "  -  [REDIS] Error connecting: #{err}"
-    @client.on "connect", -> console.log "  - [REDIS] Listening at #{host}:#{port}"
+    @client.on "error", (err) -> 
+      console.log "\n[X]".red, "REDIS".underline.red, "error connecting: #{err}"
+    @client.on "connect", -> 
+      console.log "\n[\u2713]".red, "REDIS".underline.red, "listening at", "#{host}:#{port}".underline.red
 
   close: ->
-    console.log "  - [REDIS] Closed"
+    console.log "[·]".red, "REDIS".underline.red, "Closed connection"
     do @client.quit
 
   set: (key, value) -> @client.SET String(key), value

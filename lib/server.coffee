@@ -33,8 +33,11 @@ Server =
 
   assets: ->
     if app.assets?
-      console.log " [ASSETS] Catching..."
+      console.log "\n[ ]".yellow, "ASSETS".underline.yellow
       for asset in app.assets
+        name = asset.folder or asset.file
+        console.log "[\u2713]".yellow, "Loaded", name.underline.yellow, "cached for #{asset.maxage} seconds"
+
         pattern = if asset.folder? then "/\/#{asset.folder}\/.*/" else "/#{asset.file}"
         @srv.get pattern, restify.serveStatic
             directory  : "assets/"
@@ -49,23 +52,32 @@ Server =
     @srv.use _setSession
 
   services: ->
-    mongo.open connection for connection in env.mongo?
+    if env.mongo? 
+      mongo.open connection for connection in env.mongo
     if env.redis? then redis.open env.redis.host, env.redis.port, env.redis.password
 
   endpoints: ->
+    console.log "\n[ ]".grey, "ENDPOINTS".underline.grey
+
+    url = "http://#{env.server.host}"
+    url += ":#{env.server.port}" if env.server.port
+
     for type of app.endpoints
-      require("#{folder}/endpoints/#{type}/#{endpoint}").register @srv for endpoint in app.endpoints[type]
+      # require("#{folder}/endpoints/#{type}/#{endpoint}").register @srv for endpoint in app.endpoints[type]
+      for endpoint in app.endpoints[type]
+        console.log "[\u2713]".grey, "Published endpoint at", "#{url}/#{type}/#{endpoint}".underline.grey
+        require("#{folder}/endpoints/#{type}/#{endpoint}").register @srv 
 
   start: ->
+    console.log "\n[ ]".blue, "SERVER".underline.blue
     @srv.listen process.env.VCAP_APP_PORT or env.server.port, =>
-      console.log " [SERVER] Listening at #{@srv.url} (CTRL + C to stop it)"
+      console.log "[\u2713]".blue, "Listening at", "#{@srv.url}".underline.blue
       callback.call callback, @srv if callback?
 
       if app.crons?
-        console.log " [CRONS]  Starting..."
+        console.log "\n[ ]".magenta, "CRONS".underline.magenta
         for cron in app.crons
           crons.push new (require("#{folder}/crons/#{cron.file}")) cron
-
 
   events: ->
     @srv.on "error", (error) -> console.log error
@@ -74,17 +86,15 @@ Server =
 
     process.on "SIGTERM", => @srv.close()
     process.on "SIGINT", => @srv.close()
-    process.on "exit", -> console.log "\n [SERVER] Closed"
+    process.on "exit", -> console.log "\n[·]".blue, "SERVER".underline.blue, "closed correctly"
     process.on "uncaughtException", (err) -> console.error "Caught exception: #{err}"
 
   close: ->
     @srv.on "close", ->
-      console.log "\n\n [SERVER] Closing..."
+      console.log('\n================================================\n'.rainbow);
       if env.mongo? then mongo.close()
       if env.redis? then redis.close()
-      if app.crons?
-        console.log " [CRONS]   Stopping..."
-        cron.stop() for cron in crons
+      if app.crons? then cron.stop() for cron in crons
 
 module.exports = Server
 

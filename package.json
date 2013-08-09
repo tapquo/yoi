@@ -1,6 +1,6 @@
 {
   "name"            : "yoi",
-  "version"         : "0.8.08",
+  "version"         : "0.8.09",
   "description"     : "Easy (but powerful) NodeJS Server",
   "homepage"        : "http://yoi.tapquo.com/",
   "keywords"        : ["util", "functional", "server", "browser"],
@@ -17,7 +17,8 @@
     "mongoose"      : "*",
     "redis"         : "*",
     "request"       : "*",
-    "js-yaml"       : "*" },
+    "js-yaml"       : "*",
+    "colors"        : "*" },
   "main"            : "./index.js",
   "engines"         : {
     "node"          : "*" }

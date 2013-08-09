@@ -32,13 +32,14 @@ Mongo =
 
     @connections[connection.name] = mongoose.connect "mongodb://#{url}", (error, result) ->
       if error
-        console.error "  - [MONGO].#{connection.name} Error: ", error
+        console.error "\n[MONGO].#{connection.name}".green , "Error: ", error
         process.exit()
       else
-        console.log "  - [MONGO].#{connection.name} Listening at #{connection.host}:#{connection.port}/#{connection.db}"
+        console.log "\n[\u2713]".green, "MONGO".underline.green, "listening at", "#{connection.host}:#{connection.port}/#{connection.db}".underline.green
 
   close: ->
     for name of @connections
-      @connections[name].connection.close -> console.log "  - [MONGO].#{name} Closed"
+      @connections[name].connection.close -> 
+        console.log "[·]".green, "MONGO".underline.green, "Closed", "#{name}".underline.green ,"connection"
 
 module.exports = Mongo
