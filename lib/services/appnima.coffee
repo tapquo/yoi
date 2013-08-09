@@ -16,7 +16,9 @@ Appnima =
   key     : ""
 
   init: (data) ->
-    @key = data
+    if data.key? then @key = data.key
+    if data.host? then @host = data.host
+    console.log "\n[\u2713]".yellow, "APPNIMA".underline.yellow, "conected to", "#{@host}".underline.yellow
 
 
   subscribe: (mail, callback) ->
