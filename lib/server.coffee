@@ -12,6 +12,7 @@ restify     = require "restify"
 fs          = require "fs"
 mongo       = require "./services/mongo"
 redis       = require "./services/redis"
+appnima     = require "./services/appnima"
 template    = require "./helpers/template"
 # Configuration
 app         = require "../../../yoi.yml"
@@ -54,7 +55,10 @@ Server =
   services: ->
     if env.mongo? 
       mongo.open connection for connection in env.mongo
-    if env.redis? then redis.open env.redis.host, env.redis.port, env.redis.password
+    if env.redis? 
+      redis.open env.redis.host, env.redis.port, env.redis.password
+    if env.appnima?
+      appnima.init env.appnima
 
   endpoints: ->
     console.log "\n[ ]".grey, "ENDPOINTS".underline.grey
