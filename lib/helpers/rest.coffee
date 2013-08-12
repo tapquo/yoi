@@ -41,7 +41,7 @@ class Rest
     @response.write data
 
   exception: (code, message) ->
-    console.error code, message
+    console.error "[X]".red, "ERROR".underline.red, code, message
     error = new Error message
     error.statusCode = code
     @response.send error
