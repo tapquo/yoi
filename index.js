@@ -2,7 +2,7 @@
 /*
     YOI
     @description  Easy (but powerful) NodeJS Server
-    @version      0.8.12
+    @version      0.8.13
     @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
 */
 "use strict";
@@ -27,7 +27,7 @@ var Yoi = {
     run       : function(callback) {
         process.stdout.write('\u001B[2J\u001B[0;0f');
         console.log('================================================'.rainbow);
-        console.log(' YOI'.rainbow, 'v0.8.12'.grey);
+        console.log(' YOI'.rainbow, 'v0.8.13'.grey);
         console.log(' Easy (but powerful) NodeJS server');
         console.log('', 'http://yoi.tapquo.com'.underline.blue);
         console.log('================================================'.rainbow);

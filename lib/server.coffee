@@ -23,7 +23,7 @@ crons       = []
 Server =
 
   run: (callback)->
-    @srv = restify.createServer()
+    @instance = restify.createServer()
     do @assets
     do @middleware
     do @services
@@ -31,6 +31,7 @@ Server =
     do @start
     do @events
     do @close
+    return 
 
   assets: ->
     if app.assets?
@@ -40,17 +41,17 @@ Server =
         console.log "[\u2713]".yellow, "Loaded", name.underline.yellow, "cached for #{asset.maxage} seconds"
 
         pattern = if asset.folder? then "/\/#{asset.folder}\/.*/" else "/#{asset.file}"
-        @srv.get pattern, restify.serveStatic
+        @instance.get pattern, restify.serveStatic
             directory  : "assets/"
             maxAge     : asset.maxage or 0
 
    middleware: ->
-    @srv.use restify.queryParser()
-    @srv.use restify.bodyParser()
-    @srv.use (req, res, next) ->
+    @instance.use restify.queryParser()
+    @instance.use restify.bodyParser()
+    @instance.use (req, res, next) ->
       _setCORS res
       do next
-    @srv.use _setSession
+    @instance.use _setSession
 
   services: ->
     if env.mongo? 
@@ -62,21 +63,18 @@ Server =
 
   endpoints: ->
     console.log "\n[ ]".grey, "ENDPOINTS".underline.grey
-
     url = "http://#{env.server.host}"
     url += ":#{env.server.port}" if env.server.port
-
     for type of app.endpoints
-      # require("#{folder}/endpoints/#{type}/#{endpoint}").register @srv for endpoint in app.endpoints[type]
       for endpoint in app.endpoints[type]
         console.log "[\u2713]".grey, "Published endpoint at", "#{url}/#{type}/#{endpoint}".underline.grey
-        require("#{folder}/endpoints/#{type}/#{endpoint}").register @srv 
+        require("#{folder}/endpoints/#{type}/#{endpoint}") @instance 
 
   start: ->
     console.log "\n[ ]".blue, "SERVER".underline.blue
-    @srv.listen process.env.VCAP_APP_PORT or env.server.port, =>
-      console.log "[\u2713]".blue, "Listening at", "#{@srv.url}".underline.blue
-      callback.call callback, @srv if callback?
+    @instance.listen process.env.VCAP_APP_PORT or env.server.port, =>
+      console.log "[\u2713]".blue, "Listening at", "#{@instance.url}".underline.blue
+      callback.call callback, @instance if callback?
 
       if app.crons?
         console.log "\n[ ]".magenta, "CRONS".underline.magenta
@@ -84,17 +82,19 @@ Server =
           crons.push new (require("#{folder}/crons/#{cron.file}")) cron
 
   events: ->
-    @srv.on "error", (error) -> console.log error
-    @srv.on "MethodNotAllowed", _unknownMethodHandler
-    @srv.on "NotFound", _notFoundHandler
+    @instance.on "error", (error) -> console.log error
+    @instance.on "MethodNotAllowed", _unknownMethodHandler
+    @instance.on "NotFound", _notFoundHandler
 
-    process.on "SIGTERM", => @srv.close()
-    process.on "SIGINT", => @srv.close()
-    process.on "exit", -> console.log "\n[·]".blue, "SERVER".underline.blue, "closed correctly"
-    process.on "uncaughtException", (err) -> console.error "Caught exception: #{err}"
+    process.on "SIGTERM", => @instance.close()
+    process.on "SIGINT", => @instance.close()
+    process.on "exit", -> 
+      console.log "\n[·]".blue, "SERVER".underline.blue, "closed correctly"
+    process.on "uncaughtException", (err) -> 
+      console.error "Caught exception: #{err}"
 
   close: ->
-    @srv.on "close", ->
+    @instance.on "close", ->
       console.log('\n================================================\n'.rainbow);
       if env.mongo? then mongo.close()
       if env.redis? then redis.close()
