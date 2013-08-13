@@ -9,6 +9,7 @@ YOI
 
 request = require "request"
 qs      = require "querystring"
+Hope    = require "hope"
 
 Appnima =
 
@@ -16,14 +17,15 @@ Appnima =
   key     : ""
 
   init: (data) ->
+    promise = new Hope.Promise()
     if data.key? then @key = data.key
     if data.host? then @host = data.host
-    console.log "\n[\u2713]".yellow, "APPNIMA".underline.yellow, "conected to", "#{@host}".underline.yellow
-
+    console.log "\n[\u2713]".magenta, "APPNIMA".underline.magenta, "connected to", "#{@host}".underline.magenta
+    promise.done null, true
+    promise
 
   subscribe: (mail, callback) ->
     @_proxy "POST", "user/subscription", {mail: mail}, {Authorization: "basic #{@key}"}, callback
-
 
   signup: (mail, password, username, callback) ->
     parameters =

@@ -8,14 +8,16 @@ YOI
 "use strict"
 
 mongoose = require "mongoose"
+Hope     = require "hope"
 
 Mongo =
 
   connections: {}
 
   open: (connection = {}) ->
-    #APPFOG
+    promise = new Hope.Promise()
     if process.env.VCAP_SERVICES
+      #APPFOG Connection
       env = JSON.parse(process.env.VCAP_SERVICES)
       if env["mongodb-1.8"]?
         appfog = env["mongodb-1.8"][0]["credentials"]
@@ -34,8 +36,11 @@ Mongo =
       if error
         console.log "\n[MONGO].#{connection.name}".green , "Error: ", error
         process.exit()
+        promise.done error, null
       else
         console.log "\n[\u2713]".green, "MONGO".underline.green, "listening at", "#{connection.host}:#{connection.port}/#{connection.db}".underline.green
+        promise.done null, true
+    promise
 
   close: ->
     for name of @connections

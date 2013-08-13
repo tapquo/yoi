@@ -8,11 +8,14 @@ YOI
 "use strict"
 
 redis = require "redis"
+Hope  = require "hope"
 
 Redis =
+  
   open: (host, port, password) ->
-    #APPFOG
+    promise = new Hope.Promise()
     if process.env.VCAP_SERVICES
+      #APPFOG Connection
       env = JSON.parse(process.env.VCAP_SERVICES)
       if env["redis-2.2"]?
         credentials = env["redis-2.2"][0]["credentials"]
@@ -21,10 +24,13 @@ Redis =
         password = credentials.password
     @client = redis.createClient port, host
     @client.auth password if password?
-    @client.on "error", (err) -> 
-      console.log "\n[X]".red, "REDIS".underline.red, "error connecting: #{err}"
+    @client.on "error", (error) -> 
+      console.log "\n[X]".red, "REDIS".underline.red, "error connecting: #{error}"
+      promise.done error, null
     @client.on "connect", -> 
       console.log "\n[\u2713]".red, "REDIS".underline.red, "listening at", "#{host}:#{port}".underline.red
+      promise.done null, true
+    promise
 
   close: ->
     console.log "[·]".red, "REDIS".underline.red, "Closed connection"

@@ -10,10 +10,12 @@ YOI
 # Libraries
 restify     = require "restify"
 fs          = require "fs"
+Hope        = require "hope"
 mongo       = require "./services/mongo"
 redis       = require "./services/redis"
 appnima     = require "./services/appnima"
 template    = require "./helpers/template"
+
 # Configuration
 app         = require "../../../yoi.yml"
 env         = require "../../../environments/#{app.environment}.yml"
@@ -24,16 +26,27 @@ Server =
 
   run: (callback)->
     @instance = restify.createServer()
-    do @assets
-    do @middleware
-    do @services
-    do @endpoints
-    do @start
-    do @events
-    do @close
-    return 
+
+    Hope.shield([=>
+      do @assets
+    , =>
+      do @middleware
+    , =>
+      do @services
+    , =>
+      do @endpoints
+    , =>
+      do @start
+    , =>
+      do @crons
+    ]).then (error, value) =>
+      unless error
+        do @events
+        do @close
+        console.log "\n[\u2713]".rainbow, "YOI".rainbow, "listening at", "#{@instance.url}".rainbow
 
   assets: ->
+    promise = new Hope.Promise()
     if app.assets?
       console.log "\n[ ]".yellow, "ASSETS".underline.yellow
       for asset in app.assets
@@ -44,42 +57,63 @@ Server =
         @instance.get pattern, restify.serveStatic
             directory  : "assets/"
             maxAge     : asset.maxage or 0
+    promise.done null, true
+    promise
 
    middleware: ->
+    promise = new Hope.Promise()
     @instance.use restify.queryParser()
     @instance.use restify.bodyParser()
     @instance.use (req, res, next) ->
       _setCORS res
       do next
     @instance.use _setSession
+    promise.done null, true
+    promise
 
-  services: ->
+  services: =>
+    promise = new Hope.Promise()
+    tasks = []
     if env.mongo? 
-      mongo.open connection for connection in env.mongo
-    if env.redis? 
-      redis.open env.redis.host, env.redis.port, env.redis.password
+      tasks.push(=> mongo.open connection) for connection in env.mongo
+    if env.redis?
+      tasks.push => redis.open env.redis.host, env.redis.port, env.redis.password
     if env.appnima?
-      appnima.init env.appnima
+      tasks.push => appnima.init env.appnima
+
+    if tasks.length > 0
+      Hope.shield(tasks).then (error, value) => promise.done error, value
+    else
+      promise.done null, true
+    promise
 
   endpoints: ->
-    console.log "\n[ ]".grey, "ENDPOINTS".underline.grey
+    promise = new Hope.Promise()
+    console.log "\n[ ]".blue, "ENDPOINTS".underline.blue
     url = "http://#{env.server.host}"
     url += ":#{env.server.port}" if env.server.port
     for type of app.endpoints
       for endpoint in app.endpoints[type]
-        console.log "[\u2713]".grey, "Published endpoint at", "#{url}/#{type}/#{endpoint}".underline.grey
+        console.log "[\u2713]".blue, "Published endpoint at", "#{url}/#{type}/#{endpoint}".underline.blue
         require("#{folder}/endpoints/#{type}/#{endpoint}") @instance 
+    promise.done null, true
+    promise
 
   start: ->
-    console.log "\n[ ]".blue, "SERVER".underline.blue
+    promise = new Hope.Promise()
     @instance.listen process.env.VCAP_APP_PORT or env.server.port, =>
-      console.log "[\u2713]".blue, "Listening at", "#{@instance.url}".underline.blue
       callback.call callback, @instance if callback?
+      promise.done null, true
+    promise
 
-      if app.crons?
-        console.log "\n[ ]".magenta, "CRONS".underline.magenta
-        for cron in app.crons
-          crons.push new (require("#{folder}/crons/#{cron.file}")) cron
+  crons: ->
+    promise = new Hope.Promise()
+    if app.crons?
+      console.log "\n[ ]".grey, "CRONS".underline.grey
+      for cron in app.crons
+        crons.push new (require("#{folder}/crons/#{cron.file}")) cron
+    promise.done null, true
+    promise
 
   events: ->
     @instance.on "error", (error) -> console.log error
@@ -89,9 +123,9 @@ Server =
     process.on "SIGTERM", => @instance.close()
     process.on "SIGINT", => @instance.close()
     process.on "exit", -> 
-      console.log "\n[·]".blue, "SERVER".underline.blue, "closed correctly"
-    process.on "uncaughtException", (err) -> 
-      console.error "Caught exception: #{err}"
+      console.log "\n[·]".rainbow, "YOI".rainbow, "stopped correctly"
+    process.on "uncaughtException", (error) -> 
+      console.error "[X]".red, "EXCEPTION".underline.red, error
 
   close: ->
     @instance.on "close", ->

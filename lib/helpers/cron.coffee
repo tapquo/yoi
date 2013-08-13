@@ -12,7 +12,7 @@ CronJob = require("cron").CronJob
 class Cron
 
   constructor: (@cron) ->
-    console.log "[\u2713]".magenta, "#{cron.name}".underline.magenta, "at #{cron.schedule}"
+    console.log "[\u2713]".grey, "#{cron.name}".underline.grey, "at #{cron.schedule}"
 
     @instance = new CronJob
       cronTime  : cron.schedule, 
@@ -21,7 +21,7 @@ class Cron
       timeZone  : (cron.timeZone) or "Europe/Madrid"
 
   stop: -> 
-    console.log "[·]".magenta, "CRON".underline.magenta, "named", "#{@cron.name}".underline.magenta, "stopped"
+    console.log "[·]".grey, "CRON".underline.grey, "named", "#{@cron.name}".underline.grey, "stopped"
     @instance.stop()
 
   execute: -> @
