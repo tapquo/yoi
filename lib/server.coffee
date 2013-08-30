@@ -14,7 +14,7 @@ Hope        = require "hope"
 mongo       = require "./services/mongo"
 redis       = require "./services/redis"
 appnima     = require "./services/appnima"
-template    = require "./helpers/template"
+Site        = require "./helpers/site"
 
 # Configuration
 app         = require "../../../yoi.yml"
@@ -24,7 +24,7 @@ crons       = []
 
 Server =
 
-  run: (callback)->
+  run: (callback) ->
     @instance = restify.createServer()
 
     Hope.shield([=>
@@ -71,7 +71,7 @@ Server =
     promise.done null, true
     promise
 
-  services: =>
+  services: ->
     promise = new Hope.Promise()
     tasks = []
     if env.mongo? 
@@ -146,7 +146,8 @@ _unknownMethodHandler = (request, response) ->
     response.send new restify.MethodNotAllowedError()
 
 _notFoundHandler = (request, response) ->
-  template "404", null, response
+  site = new Site request, response
+  site.template "404"
 
 _setCORS = (response) ->
   response.header "Access-Control-Allow-Credentials", true

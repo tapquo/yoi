@@ -11,19 +11,12 @@ restify   = require "restify"
 
 class Rest
 
-  constructor: (@request, @response) -> 
-    @session = @request.session
-    @cookies = {}
-    @request.headers.cookie and @request.headers.cookie.split(";").forEach (cookie) =>
-      parts = cookie.split("=")
-      @cookies[parts[0].trim()] = (parts[1] or "" ).trim()
+  constructor: (@request, @response, @next) -> @session = @request.session
 
   required: (parameters = []) ->
     for param in parameters
       if !@request.params[param]?
         throw code: 400, message: "#{param} is required."
-
-  cookie: (key) -> @cookies[key]
 
   parameter: (name) -> @request.params[name] or null
 
