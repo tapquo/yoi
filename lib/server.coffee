@@ -94,7 +94,7 @@ Server =
     url += ":#{env.server.port}" if env.server.port
     for type of app.endpoints
       for endpoint in app.endpoints[type]
-        console.log "[\u2713]".blue, "Published endpoint at", "#{url}/#{type}/#{endpoint}".underline.blue
+        console.log "[\u2713]".blue, "Published endpoints via file", "#{type}/#{endpoint}".underline.blue
         require("#{folder}/endpoints/#{type}/#{endpoint}") @instance 
     promise.done null, true
     promise
