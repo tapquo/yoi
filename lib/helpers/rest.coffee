@@ -8,10 +8,15 @@ YOI
 "use strict"
 
 restify   = require "restify"
+moment    = require "moment"
+# Configuration
+config = global.config
 
 class Rest
 
-  constructor: (@request, @response, @next) -> @session = @request.session
+  constructor: (@request, @response, @next) -> 
+    @session = @request.session
+    _inputLog @request if config.environment.log?.request
 
   required: (parameters = []) ->
     for param in parameters
@@ -27,6 +32,7 @@ class Rest
       @request.connection.remoteAddress
 
   run: (parameters, headers={}) ->
+    _outputLog @response.statusCode, "{#{Object.keys(parameters).length}}", "green"
     @response.setHeader name, headers[name] for name of headers
     @response.json parameters
 
@@ -34,12 +40,13 @@ class Rest
     @response.write data
 
   exception: (code, message) ->
-    console.error "[X]".red, "ERROR".underline.red, code, message
+    _outputLog code, message, "red"
     error = new Error message
     error.statusCode = code
     @response.send error
 
   httpResponse: (code, status) ->
+    _outputLog code, status, "green"
     @response.statusCode = code
     if status
       @response.json "message": status
@@ -90,3 +97,13 @@ class Rest
   serviceUnavailable: (status = "Service Unavailable") -> @exception 503, status
 
 exports = module.exports = Rest
+
+_outputLog = (code, status, color="green") =>
+  if config.environment.log?.response
+    console.log "[>]"[color], "#{_now()}".grey, "#{code}".underline[color], status
+
+_inputLog = (request) ->
+  secured = "[Authenticated]" if request.session
+  console.log "\n[<]".blue, "#{_now()}".grey, "#{request.method}".underline.blue, request.path(), "#{secured}".grey
+
+_now = -> moment().format("HH:mm:ss:SSS - MMM DD YYYY")

@@ -17,8 +17,8 @@ appnima     = require "./services/appnima"
 Site        = require "./helpers/site"
 
 # Configuration
-app         = require "../../../yoi.yml"
-env         = require "../../../environments/#{app.environment}.yml"
+config      = global.config
+environment = global.config.environment
 folder      = "../../../"
 crons       = []
 
@@ -40,16 +40,19 @@ Server =
     , =>
       do @crons
     ]).then (error, value) =>
-      unless error
+      if error
+        console.error "[X]".red, "ERROR".underline.red, error
+      else
         do @events
         do @close
         console.log "\n[\u2713]".rainbow, "YOI".rainbow, "listening at", "#{@instance.url}".rainbow
+        
 
   assets: ->
     promise = new Hope.Promise()
-    if app.assets?
+    if config.assets?
       console.log "\n[ ]".yellow, "ASSETS".underline.yellow
-      for asset in app.assets
+      for asset in config.assets
         name = asset.folder or asset.file
         console.log "[\u2713]".yellow, "Loaded", name.underline.yellow, "cached for #{asset.maxage} seconds"
 
@@ -74,12 +77,12 @@ Server =
   services: ->
     promise = new Hope.Promise()
     tasks = []
-    if env.mongo? 
-      tasks.push(=> mongo.open connection) for connection in env.mongo
-    if env.redis?
-      tasks.push => redis.open env.redis.host, env.redis.port, env.redis.password
-    if env.appnima?
-      tasks.push => appnima.init env.appnima
+    if environment.mongo? 
+      tasks.push(=> mongo.open connection) for connection in environment.mongo
+    if environment.redis?
+      tasks.push => redis.open environment.redis.host, environment.redis.port, environment.redis.password
+    if environment.appnima?
+      tasks.push => appnima.init environment.appnima
 
     if tasks.length > 0
       Hope.shield(tasks).then (error, value) => promise.done error, value
@@ -90,36 +93,36 @@ Server =
   endpoints: ->
     promise = new Hope.Promise()
     console.log "\n[ ]".blue, "ENDPOINTS".underline.blue
-    url = "http://#{env.server.host}"
-    url += ":#{env.server.port}" if env.server.port
-    for type of app.endpoints
-      for endpoint in app.endpoints[type]
-        console.log "[\u2713]".blue, "Published endpoints via file", "#{type}/#{endpoint}".underline.blue
+    url = "http://#{environment.server.host}"
+    url += ":#{environment.server.port}" if environment.server.port
+    for type of config.endpoints
+      for endpoint in config.endpoints[type]
+        console.log "[\u2713]".blue, "Published endpoints in file", "#{type}/#{endpoint}".underline.blue
         require("#{folder}/endpoints/#{type}/#{endpoint}") @instance 
     promise.done null, true
     promise
 
   start: ->
     promise = new Hope.Promise()
-    @instance.listen process.env.VCAP_APP_PORT or env.server.port, =>
+    @instance.listen process.env.VCAP_APP_PORT or environment.server.port, =>
       callback.call callback, @instance if callback?
       promise.done null, true
     promise
 
   crons: ->
     promise = new Hope.Promise()
-    if app.crons?
+    if config.crons?
       console.log "\n[ ]".grey, "CRONS".underline.grey
-      for cron in app.crons
+      for cron in config.crons
         crons.push new (require("#{folder}/crons/#{cron.file}")) cron
     promise.done null, true
     promise
 
   events: ->
-    @instance.on "error", (error) -> console.log error
+    @instance.on "error", (error) -> 
+      console.error "[X]".red, "ERROR".underline.red, error
     @instance.on "MethodNotAllowed", _unknownMethodHandler
     @instance.on "NotFound", _notFoundHandler
-
     process.on "SIGTERM", => @instance.close()
     process.on "SIGINT", => @instance.close()
     process.on "exit", -> 
@@ -130,9 +133,9 @@ Server =
   close: ->
     @instance.on "close", ->
       console.log('\n================================================\n'.rainbow);
-      if env.mongo? then mongo.close()
-      if env.redis? then redis.close()
-      if app.crons? then cron.stop() for cron in crons
+      if environment.mongo? then mongo.close()
+      if environment.redis? then redis.close()
+      if config.crons? then cron.stop() for cron in crons
 
 module.exports = Server
 
@@ -151,20 +154,20 @@ _notFoundHandler = (request, response) ->
 
 _setCORS = (response) ->
   response.header "Access-Control-Allow-Credentials", true
-  response.header "Access-Control-Allow-Headers", app.ALLOWED_HEADERS.join(", ")
-  response.header "Access-Control-Allow-Methods", app.ALLOWED_METHODS.join(", ")
-  response.header "Access-Control-Expose-Headers", app.EXPOSE_HEADERS.join(", ")
-  response.header "Access-Control-Allow-Origin", app.ALLOW_ORIGIN
+  response.header "Access-Control-Allow-Headers", config.ALLOWED_HEADERS.join(", ")
+  response.header "Access-Control-Allow-Methods", config.ALLOWED_METHODS.join(", ")
+  response.header "Access-Control-Expose-Headers", config.EXPOSE_HEADERS.join(", ")
+  response.header "Access-Control-Allow-Origin", config.ALLOW_ORIGIN
 
 _setSession = (request, res, next) ->
-  rest = app.session.rest
+  rest = config.session.rest
   request.session = null
   request.session = request.headers[rest] if request.headers[rest]?
   if request.headers.cookie?
     request.headers.cookie and request.headers.cookie.split(";").forEach (cookie) ->
       parts = cookie.split("=")
       key = parts[0].trim()
-      request.session = (parts[1] or "" ).trim() if key is app.session.cookie
+      request.session = (parts[1] or "" ).trim() if key is config.session.cookie
   do next
 
 _file = (file, content_type, response, next) ->

@@ -2,7 +2,7 @@
 /*
     YOI
     @description  Easy (but powerful) NodeJS Server
-    @version      0.8.30
+    @version      0.9.10
     @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
 */
 "use strict";
@@ -11,11 +11,15 @@ require("coffee-script");
 require("js-yaml");
 require("colors");
 
+global.config = require("../../yoi.yml");
+global.config.environment = require("../../environments/" + global.config.environment + ".yml");
+
 var Yoi = {
     // Helpers
     Rest      : require("./lib/helpers/rest"),
     Site      : require("./lib/helpers/site"),
     Cron      : require("./lib/helpers/cron"),
+    Test      : require("./lib/helpers/test"),
     // Services
     Mongo     : require("./lib/services/mongo"),
     Redis     : require("./lib/services/redis"),
@@ -25,14 +29,23 @@ var Yoi = {
     Hope      : require("hope"),
     // Instance
     run       : function(callback) {
-        process.stdout.write('\u001B[2J\u001B[0;0f');
-        console.log('================================================'.rainbow);
-        console.log(' YOI'.rainbow, 'v0.8.30'.grey);
-        console.log(' Easy (but powerful) NodeJS server');
-        console.log('', 'http://yoi.tapquo.com'.underline.blue);
-        console.log('================================================'.rainbow);
+        _watermark();
         require("./lib/server").run(callback);
+    },
+    // Instance
+    test       : function(callback) {
+        _watermark();
+        require("./lib/test").run();
     }
 };
 
 module.exports = Yoi;
+
+var _watermark = function() {
+    process.stdout.write('\u001B[2J\u001B[0;0f');
+    console.log('================================================================================'.rainbow);
+    console.log(' YOI'.rainbow, 'v0.9.10'.grey);
+    console.log(' Easy (but powerful) NodeJS server');
+    console.log('', 'http://yoi.tapquo.com'.underline.blue);
+    console.log('================================================================================'.rainbow);
+};

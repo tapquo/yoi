@@ -11,7 +11,8 @@ Rest   = require "./rest"
 fs     = require "fs"
 jade   = require "jade"
 Cookie = require "cookie"
-app    = require "../../../../yoi.yml"
+# Configuration
+config = global.config
 
 class Site extends Rest
 
@@ -34,14 +35,14 @@ class Site extends Rest
 
   template: (file, properties = {}, cookie) ->
     try
-      page = fs.readFileSync "#{app.templates}/#{file}.jade", "utf8"
+      page = fs.readFileSync "#{config.templates}/#{file}.jade", "utf8"
     catch exception
       try
-        page = fs.readFileSync "#{app.templates}/404.jade", "utf8"
+        page = fs.readFileSync "#{config.templates}/404.jade", "utf8"
       catch e
         page = "h1 404 - Not found"
 
-    properties.basedir = app.templates
+    properties.basedir = config.templates
     properties.layout = false
     properties.pretty = false
 
@@ -57,7 +58,7 @@ exports = module.exports = Site
 
 _setCookieInHeader = (headers, cookie) ->
   if cookie?
-    headers["Set-Cookie"] = Cookie.serialize app.session.cookie, cookie, maxAge: app.session.expire, httpOnly: true, path:"/"
+    headers["Set-Cookie"] = Cookie.serialize config.session.cookie, cookie, maxAge: config.session.expire, httpOnly: true, path:"/"
   else if cookie is null
-    headers["Set-Cookie"] = Cookie.serialize app.session.cookie, cookie, maxAge: 0.001, httpOnly: true, path:"/"
+    headers["Set-Cookie"] = Cookie.serialize config.session.cookie, cookie, maxAge: 0.001, httpOnly: true, path:"/"
   headers
