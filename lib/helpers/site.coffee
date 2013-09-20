@@ -57,8 +57,16 @@ class Site extends Rest
 exports = module.exports = Site
 
 _setCookieInHeader = (headers, cookie) ->
-  if cookie?
-    headers["Set-Cookie"] = Cookie.serialize config.session.cookie, cookie, maxAge: config.session.expire, httpOnly: true, path:"/"
-  else if cookie is null
-    headers["Set-Cookie"] = Cookie.serialize config.session.cookie, cookie, maxAge: 0.001, httpOnly: true, path:"/"
+  maxAge = null
+  if cookie? then maxAge = config.session.expire
+  else if cookie is null then maxAge = 0.001
+  if maxAge
+    parameters =
+      domain: config.session.domain if config.session.domain?
+      maxAge: maxAge
+      httpOnly: true
+      path: "/"
+
+    headers["Set-Cookie"] = Cookie.serialize config.session.cookie, cookie, parameters
+
   headers
