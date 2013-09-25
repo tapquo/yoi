@@ -11,7 +11,7 @@ redis = require "redis"
 Hope  = require "hope"
 
 Redis =
-  
+
   open: (host, port, password) ->
     promise = new Hope.Promise()
     if process.env.VCAP_SERVICES
@@ -24,10 +24,10 @@ Redis =
         password = credentials.password
     @client = redis.createClient port, host
     @client.auth password if password?
-    @client.on "error", (error) -> 
+    @client.on "error", (error) ->
       console.log "\n[X]".red, "REDIS".underline.red, "error connecting: #{error}"
       promise.done error, null
-    @client.on "connect", -> 
+    @client.on "connect", ->
       console.log "\n[\u2713]".red, "REDIS".underline.red, "listening at", "#{host}:#{port}".underline.red
       promise.done null, true
     promise

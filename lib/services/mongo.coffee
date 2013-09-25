@@ -44,7 +44,7 @@ Mongo =
 
   close: ->
     for name of @connections
-      @connections[name].connection.close -> 
+      @connections[name].connection.close ->
         console.log "[·]".green, "MONGO".underline.green, "Closed", "#{name}".underline.green ,"connection"
 
 module.exports = Mongo

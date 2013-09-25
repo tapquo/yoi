@@ -16,7 +16,7 @@ config = global.config
 
 class Site extends Rest
 
-  constructor: (@request, @response, @next) -> 
+  constructor: (@request, @response, @next) ->
     super
     @cookies = {}
     @request.headers.cookie and @request.headers.cookie.split(";").forEach (cookie) =>
@@ -26,7 +26,7 @@ class Site extends Rest
   cookie: (key) -> @cookies[key]
 
   run: (html, cookie) ->
-    headers = 
+    headers =
       "Content-Type"    : "text/html"
       "Content-Length"  : html.length
     @response.writeHead 200, _setCookieInHeader(headers, cookie)
@@ -56,17 +56,13 @@ class Site extends Rest
 
 exports = module.exports = Site
 
+
 _setCookieInHeader = (headers, cookie) ->
-  maxAge = null
-  if cookie? then maxAge = config.session.expire
-  else if cookie is null then maxAge = 0.001
-  if maxAge
-    parameters =
-      domain: config.session.domain if config.session.domain?
-      maxAge: maxAge
+  if cookie? or cookie is null
+    attributes =
+      maxAge  : if cookie? then config.session.expire else 0.001
       httpOnly: true
-      path: "/"
-
-    headers["Set-Cookie"] = Cookie.serialize config.session.cookie, cookie, parameters
-
+      path    :"/"
+    attributes.domain = config.session.domain if config.session.domain?
+    headers["Set-Cookie"] = Cookie.serialize config.session.cookie, cookie, attributes
   headers

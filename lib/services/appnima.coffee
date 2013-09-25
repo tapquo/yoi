@@ -28,21 +28,23 @@ Appnima =
     @_proxy "POST", "user/subscription", {mail: mail}, {Authorization: "basic #{@key}"}, callback
 
   signup: (mail, password, username, callback) ->
-    parameters =
-      mail      : mail
-      password  : password
-      username  : username
-    @_proxy "POST", "user/signup", parameters, Authorization: "basic #{@key}", (error, result) =>
-      if result?
-        parameters.grant_type = "password"
-        @_proxy "POST", "oauth2/token", parameters, Authorization: "basic #{@key}", (error, token) ->
-          if token?
-            result[attribute] = token[attribute] for attribute of token
-          else
-            result = null
-          callback.call callback, error, result
-      else
-        callback.call callback, error, null
+    promise = new Hope.Promise()
+
+    parameters = mail: mail, password: password, username: username
+    Hope.shield([=>
+      @_proxy "POST", "user/signup", parameters, Authorization: "basic #{@key}"
+    , (error, signup) =>
+      child_promise = new Hope.Promise()
+      parameters.grant_type = "password"
+      @_proxy("POST", "oauth2/token", parameters, Authorization: "basic #{@key}").then (error, token) ->
+        if token?
+          signup.access_token = token.access_token
+          signup.refresh_token = token.refresh_token
+        child_promise.done error, signup
+      child_promise
+    ]).then (error, value) -> promise.done error, value
+
+    promise
 
 
   login: (mail, password, username, callback) ->
@@ -66,6 +68,8 @@ Appnima =
 
 
   _proxy: (method, url, parameters = {}, headers = {}, callback) ->
+    promise = new Hope.Promise()
+
     method = method.toUpperCase()
     options =
       method  : method
@@ -81,6 +85,9 @@ Appnima =
       if response.statusCode >= 400
         error = code: response.statusCode, message: result.message
         result = null
+      promise.done error, result
       callback.call callback, error, result if callback?
+
+    promise
 
 module.exports = Appnima

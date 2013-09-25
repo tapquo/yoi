@@ -15,12 +15,12 @@ class Cron
     console.log "[\u2713]".grey, "#{cron.name}".underline.grey, "at #{cron.schedule}"
 
     @instance = new CronJob
-      cronTime  : cron.schedule, 
+      cronTime  : cron.schedule,
       onTick    : @execute,
       start     : true,
       timeZone  : (cron.timeZone) or "Europe/Madrid"
 
-  stop: -> 
+  stop: ->
     console.log "[·]".grey, "CRON".underline.grey, "named", "#{@cron.name}".underline.grey, "stopped"
     @instance.stop()
 

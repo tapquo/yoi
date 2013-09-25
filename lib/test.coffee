@@ -24,7 +24,7 @@ Test =
       tests = tests.concat do require("#{folder}/test/#{file}")
 
     test.counters = total: tests.length, success: 0, current: 0
-    Hope.chain(tests).then (error, result) -> 
+    Hope.chain(tests).then (error, result) ->
       coverage = ((test.counters.success * 100) / test.counters.total).toFixed(2)
       failed = test.counters.total - test.counters.success
       console.log('================================================================================'.rainbow);
@@ -32,4 +32,3 @@ Test =
       console.log('================================================================================'.rainbow);
 
 module.exports = Test
-

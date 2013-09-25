@@ -14,7 +14,7 @@ config = global.config
 
 class Rest
 
-  constructor: (@request, @response, @next) -> 
+  constructor: (@request, @response, @next) ->
     @session = @request.session
     _inputLog @request if config.environment.log?.request
 

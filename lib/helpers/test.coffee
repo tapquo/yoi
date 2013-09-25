@@ -25,14 +25,14 @@ module.exports = (method, url, parameters={}, headers={}, description="", expect
     headers : headers
   if parameters? and (method is "GET" or method is "DELETE")
     options.uri += "?#{qs.stringify(parameters)}"
-  else 
+  else
     options.form = parameters
 
   request options, (error, response, body) ->
     if response
       result = JSON.parse body if body?
 
-      if response.statusCode is expected_code 
+      if response.statusCode is expected_code
         test.counters.success++
         console.log "[\u2713]".green, "#{__formatNumber(test.counters.current)}".white, "#{description}".grey
         # console.log "[#{__formatNumber(test.counters.current)}]".green, description.grey

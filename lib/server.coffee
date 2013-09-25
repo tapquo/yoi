@@ -46,7 +46,7 @@ Server =
         do @events
         do @close
         console.log "\n[\u2713]".rainbow, "YOI".rainbow, "listening at", "#{@instance.url}".rainbow
-        
+
 
   assets: ->
     promise = new Hope.Promise()
@@ -77,7 +77,7 @@ Server =
   services: ->
     promise = new Hope.Promise()
     tasks = []
-    if environment.mongo? 
+    if environment.mongo?
       tasks.push(=> mongo.open connection) for connection in environment.mongo
     if environment.redis?
       tasks.push => redis.open environment.redis.host, environment.redis.port, environment.redis.password
@@ -98,7 +98,7 @@ Server =
     for type of config.endpoints
       for endpoint in config.endpoints[type]
         console.log "[\u2713]".blue, "Published endpoints in file", "#{type}/#{endpoint}".underline.blue
-        require("#{folder}/endpoints/#{type}/#{endpoint}") @instance 
+        require("#{folder}/endpoints/#{type}/#{endpoint}") @instance
     promise.done null, true
     promise
 
@@ -119,15 +119,15 @@ Server =
     promise
 
   events: ->
-    @instance.on "error", (error) -> 
+    @instance.on "error", (error) ->
       console.error "[X]".red, "ERROR".underline.red, error
     @instance.on "MethodNotAllowed", _unknownMethodHandler
     @instance.on "NotFound", _notFoundHandler
     process.on "SIGTERM", => @instance.close()
     process.on "SIGINT", => @instance.close()
-    process.on "exit", -> 
+    process.on "exit", ->
       console.log "\n[·]".rainbow, "YOI".rainbow, "stopped correctly"
-    process.on "uncaughtException", (error) -> 
+    process.on "uncaughtException", (error) ->
       console.error "[X]".red, "EXCEPTION".underline.red, error
 
   close: ->
