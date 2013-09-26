@@ -16,24 +16,25 @@ global.config.environment = require("../../environments/" + global.config.enviro
 
 var Yoi = {
     // Helpers
-    Rest      : require("./lib/helpers/rest"),
-    Site      : require("./lib/helpers/site"),
-    Cron      : require("./lib/helpers/cron"),
-    Test      : require("./lib/helpers/test"),
+    Rest        : require("./lib/helpers/rest"),
+    Site        : require("./lib/helpers/site"),
+    Cron        : require("./lib/helpers/cron"),
+    Test        : require("./lib/helpers/test"),
+    SocketTest  : require("./lib/helpers/sockettest"),
     // Services
-    Mongo     : require("./lib/services/mongo"),
-    Redis     : require("./lib/services/redis"),
-    Appnima   : require("./lib/services/appnima"),
+    Mongo       : require("./lib/services/mongo"),
+    Redis       : require("./lib/services/redis"),
+    Appnima     : require("./lib/services/appnima"),
     // Facade
-    Mongoose  : require("mongoose"),
-    Hope      : require("hope"),
+    Mongoose    : require("mongoose"),
+    Hope        : require("hope"),
     // Instance
-    run       : function(callback) {
+    run         : function(callback) {
         _watermark();
         require("./lib/server").run(callback);
     },
     // Instance
-    test       : function(callback) {
+    test        : function(callback) {
         _watermark();
         require("./lib/test").run();
     }
