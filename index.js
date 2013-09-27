@@ -2,7 +2,7 @@
 /*
     YOI
     @description  Easy (but powerful) NodeJS Server
-    @version      0.9.25
+    @version      0.9.28
     @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
 */
 "use strict";
@@ -20,7 +20,7 @@ var Yoi = {
     Site        : require("./lib/helpers/site"),
     Cron        : require("./lib/helpers/cron"),
     Test        : require("./lib/helpers/test"),
-    SocketTest  : require("./lib/helpers/sockettest"),
+    SocketTest  : require("./lib/helpers/test_socket"),
     // Services
     Mongo       : require("./lib/services/mongo"),
     Redis       : require("./lib/services/redis"),
@@ -45,7 +45,7 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v0.9.27'.grey);
+    console.log(' YOI'.rainbow, 'v0.9.28'.grey);
     console.log(' Easy (but powerful) NodeJS server');
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);

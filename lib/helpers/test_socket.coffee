@@ -1,6 +1,6 @@
 "use strict"
 
-require "color"
+require "colors"
 Hope      = require "hope"
 server    = global.config.environment.server
 
