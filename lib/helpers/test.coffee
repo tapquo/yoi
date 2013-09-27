@@ -7,7 +7,7 @@ YOI
 ###
 "use strict"
 
-require "color"
+require "colors"
 Hope      = require "hope"
 request   = require "request"
 qs        = require "querystring"
