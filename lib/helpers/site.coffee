@@ -28,7 +28,8 @@ class Site extends Rest
   run: (html, cookie) ->
     headers =
       "Content-Type"    : "text/html"
-      "Content-Length"  : html.length
+      # "Content-Length"  : html.length
+      
     @response.writeHead 200, _setCookieInHeader(headers, cookie)
     @response.write html
     do @response.end
