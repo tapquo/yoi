@@ -9,6 +9,7 @@ YOI
 
 restify   = require "restify"
 moment    = require "moment"
+Model     = require "./model"
 # Configuration
 config = global.config
 
@@ -75,26 +76,28 @@ class Rest
   notModified: (status = "Not Modified: resource has not changed") -> @httpResponse 304, status
 
   # 400 Client Error
-  badRequest: (status = "Bad Request: malformed request") -> @exception 400, status
+  badRequest: (status) -> @_parseException Model.badRequest status
 
-  unauthorized: (status = "Unauthorized: requires authentication") -> @exception 401, status
+  unauthorized: (status) -> @_parseException Model.unauthorized status
 
-  forbidden: (status = "Forbidden: denied access to the resource") -> @exception 403, status
+  forbidden: (status) ->  @_parseException Model.forbidden status
 
-  notFound: (status = "Resource not found") -> @exception 404, status
+  notFound: (status) ->   @_parseException Model.notFound status
 
-  notAllowed: (status = "Not Allowed: invalid HTTP format") -> @exception 405, status
+  notAllowed: (status) -> @_parseException Model.notAllowed status
 
-  conflict: (status = "Conflict: resource newer than the client’s timestamp") -> @exception 409, status
+  conflict: (status) ->   @_parseException Model.conflict status
 
   # 500 Server Error
-  serverError: (status = "Internal Server Error") -> @exception 500. status
+  serverError: (status) -> @_parseException Model.serverError status
 
-  notImplemented: (status = "Not Implemented: server does not yet support the requested functionality.") -> @exception 501. status
+  notImplemented: (status) -> @_parseException Model.notImplemented status
 
-  badGateway: (status = "Bad Gateway") -> @exception 502, status
+  badGateway: (status) -> @_parseException Model.badGateway status
 
-  serviceUnavailable: (status = "Service Unavailable") -> @exception 503, status
+  serviceUnavailable: (status) -> @_parseException Model.serviceUnavailable status
+
+  _parseException: (model) -> @exception model.error, model.message
 
 exports = module.exports = Rest
 
@@ -106,4 +109,5 @@ _inputLog = (request) ->
   secured = "[Authenticated]" if request.session
   console.log "\n[<]".blue, "#{_now()}".grey, "#{request.method}".underline.blue, request.path(), "#{secured}".grey
 
-_now = -> moment().format("HH:mm:ss:SSS - MMM DD YYYY")
+_now = ->
+  moment().format("HH:mm:ss:SSS - MMM DD YYYY")
