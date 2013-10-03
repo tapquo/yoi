@@ -25,7 +25,13 @@ crons       = []
 Server =
 
   run: (callback) ->
-    @instance = restify.createServer()
+    if environment.server.https?
+      https_options =
+        key: fs.readFileSync("#{environment.server.https.key}")
+        certificate: fs.readFileSync("#{environment.server.https.certificate}")
+      @instance = restify.createServer https_options
+    else
+      @instance = restify.createServer()
 
     Hope.shield([=>
       do @assets
@@ -46,6 +52,8 @@ Server =
         do @events
         do @close
         console.log "\n[\u2713]".rainbow, "YOI".rainbow, "listening at", "#{@instance.url}".rainbow
+        if environment.https?
+          console.log "\n[\u2713]".rainbow, "YOI HTTPS".rainbow, "listening at", "#{@https_server.url}".rainbow
 
 
   assets: ->
@@ -132,7 +140,7 @@ Server =
 
   close: ->
     @instance.on "close", ->
-      console.log('\n================================================\n'.rainbow);
+      console.log('\n================================================\n'.rainbow)
       if environment.mongo? then mongo.close()
       if environment.redis? then redis.close()
       if config.crons? then cron.stop() for cron in crons
