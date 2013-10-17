@@ -5,7 +5,9 @@
   "homepage"            : "http://yoi.tapquo.com/",
   "keywords"            : ["util", "functional", "server", "browser"],
   "author"              : "Javi Jimenez <javi@tapquo.com>",
-  "contributors"        : ["Inigo Gonzalez <inigo@tapquo.com>"],
+  "contributors"        : [
+                            "Inigo Gonzalez <inigo@tapquo.com>",
+                            "Joseba Legarreta <joseba@tapquo.com>"],
   "dependencies": {
     "coffee-script"     : "*",
     "restify"           : "*",
