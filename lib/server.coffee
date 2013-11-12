@@ -55,6 +55,7 @@ Server =
         if environment.https?
           console.log "\n[\u2713]".rainbow, "YOI HTTPS".rainbow, "listening at", "#{@https_server.url}".rainbow
 
+    @instance
 
   assets: ->
     promise = new Hope.Promise()
@@ -73,6 +74,7 @@ Server =
 
    middleware: ->
     promise = new Hope.Promise()
+    @instance.use restify.gzipResponse()
     @instance.use restify.queryParser()
     @instance.use restify.bodyParser()
     @instance.use (req, res, next) ->

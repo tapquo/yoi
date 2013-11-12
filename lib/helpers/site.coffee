@@ -25,19 +25,18 @@ class Site extends Rest
 
   cookie: (key) -> @cookies[key]
 
-  run: (html, cookie) ->
-    headers =
-      "Content-Type"    : "text/html"
-      # "Content-Length"  : html.length
-      
-    @response.writeHead 200, _setCookieInHeader(headers, cookie)
+  run: (html, cookie, code = 200) ->
+    headers = "Content-Type": "text/html"
+    @response.writeHead code, _setCookieInHeader(headers, cookie)
     @response.write html
     do @response.end
 
   template: (file, properties = {}, cookie) ->
+    error = false
     try
       page = fs.readFileSync "#{config.templates}/#{file}.jade", "utf8"
     catch exception
+      error = true
       try
         page = fs.readFileSync "#{config.templates}/404.jade", "utf8"
       catch e
@@ -48,7 +47,7 @@ class Site extends Rest
     properties.pretty = false
 
     html = jade.render page, properties
-    @run html, cookie
+    @run html, cookie, (if error then 404 else 200)
 
   redirect: (url, cookie) ->
     headers = "location": url
