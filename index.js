@@ -46,7 +46,7 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v0.11.12'.grey);
+    console.log(' YOI'.rainbow, 'v0.11.13'.grey);
     console.log(' Easy (but powerful) NodeJS server');
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);

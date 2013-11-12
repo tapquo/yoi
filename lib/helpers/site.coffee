@@ -32,11 +32,11 @@ class Site extends Rest
     do @response.end
 
   template: (file, properties = {}, cookie) ->
-    error = false
+    code = if file is "404" then 404 else 200
     try
       page = fs.readFileSync "#{config.templates}/#{file}.jade", "utf8"
     catch exception
-      error = true
+      code = 404
       try
         page = fs.readFileSync "#{config.templates}/404.jade", "utf8"
       catch e
@@ -47,7 +47,7 @@ class Site extends Rest
     properties.pretty = false
 
     html = jade.render page, properties
-    @run html, cookie, (if error then 404 else 200)
+    @run html, cookie, code
 
   redirect: (url, cookie) ->
     headers = "location": url
