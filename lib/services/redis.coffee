@@ -47,6 +47,12 @@ Redis =
   expire: (key, time) -> @client.EXPIRE String(key), time
 
   remove: (key) -> @client.DEL String(key)
+  
+  hgetall: (key, callback) -> @client.HGETALL String(key), callback
+  
+  hdel: (key, field) -> @client.hdel String(key), field
+  
+  hincrby: (key, field, increment) -> @client.HINCRBY String(key), field, increment
 
   get: (key, callback) ->
     @client.GET key, (error, result) ->
