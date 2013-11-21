@@ -54,6 +54,12 @@ Redis =
   
   hincrby: (key, field, increment) -> @client.HINCRBY String(key), field, increment
 
+  run: (args...) ->
+    @client[args[0]].apply @client, args.slice(1)
+
+  multi: (actions, callback) ->
+    @client.multi(actions).exec callback
+
   get: (key, callback) ->
     @client.GET key, (error, result) ->
       result = JSON.parse result if result?
