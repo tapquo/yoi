@@ -28,7 +28,7 @@ Redis =
       console.log "\n[X]".red, "REDIS".underline.red, "error connecting: #{error}"
       promise.done error, null
     @client.on "connect", ->
-      console.log "\n[\u2713]".red, "REDIS".underline.red, "listening at", "#{host}:#{port}".underline.red
+      console.log "\n[\u2713]".green, "REDIS".underline.green, "listening at", "#{host}:#{port}".underline.green
       promise.done null, true
     promise
 
