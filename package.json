@@ -10,7 +10,7 @@
                             "Inigo Gonzalez <inigo@tapquo.com>"],
   "dependencies": {
     "coffee-script"     : "*",
-    "restify"           : "*",
+    "restify"           : "git://github.com/tapquo/node-restify",
     "cookie"            : "*",
     "cron"              : "*",
     "time"              : "*",
