@@ -36,7 +36,7 @@ Appnima =
     , (error, signup) =>
       child_promise = new Hope.Promise()
       parameters.grant_type = "password"
-      @_proxy("POST", "oauth2/token", parameters, Authorization: "basic #{@key}").then (error, token) ->
+      @_proxy("POST", "user/token", parameters, Authorization: "basic #{@key}").then (error, token) ->
         if token?
           signup.access_token = token.access_token
           signup.refresh_token = token.refresh_token
@@ -59,7 +59,7 @@ Appnima =
     parameters =
       refresh_token : refresh_token
       grant_type    : "refresh_token"
-    @_proxy "POST", "oauth2/token", parameters, Authorization: "basic #{@key}", callback
+    @_proxy "POST", "user/token", parameters, Authorization: "basic #{@key}", callback
 
 
   api: (method, url, token, parameters, callback) ->
