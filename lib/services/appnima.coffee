@@ -35,7 +35,8 @@ Appnima =
       @_proxy "POST", "user/signup", parameters, Authorization: "basic #{@key}"
     , (error, signup) =>
       child_promise = new Hope.Promise()
-      parameters.grant_type = "password"
+      parameters.grant_type = "refresh_token"
+      parameters.refresh_token = signup.refresh_token
       @_proxy("POST", "user/token", parameters, Authorization: "basic #{@key}").then (error, token) ->
         if token?
           signup.access_token = token.access_token
