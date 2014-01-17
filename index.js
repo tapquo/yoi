@@ -8,7 +8,9 @@
 "use strict";
 
 require("coffee-script");
+require("js-yaml");
 require("colors");
+
 var fs = require("fs");
 var yaml = require('js-yaml');
 var path = require('path');
@@ -21,26 +23,26 @@ global.config.environment = yaml.safeLoad(fs.readFileSync(environment, 'utf8'));
 
 var Yoi = {
     // Helpers
-    Cron: require("./lib/helpers/cron"),
-    Model: require("./lib/helpers/model"),
-    Rest: require("./lib/helpers/rest"),
-    Site: require("./lib/helpers/site"),
-    SocketTest: require("./lib/helpers/test_socket"),
-    Test: require("./lib/helpers/test"),
+    Cron        : require("./lib/helpers/cron"),
+    Model       : require("./lib/helpers/model"),
+    Rest        : require("./lib/helpers/rest"),
+    Site        : require("./lib/helpers/site"),
+    SocketTest  : require("./lib/helpers/test_socket"),
+    Test        : require("./lib/helpers/test"),
     // Services
-    Mongo: require("./lib/services/mongo"),
-    Redis: require("./lib/services/redis"),
-    Appnima: require("./lib/services/appnima"),
+    Mongo       : require("./lib/services/mongo"),
+    Redis       : require("./lib/services/redis"),
+    Appnima     : require("./lib/services/appnima"),
     // Facade
-    Mongoose: require("mongoose"),
-    Hope: require("hope"),
+    Mongoose    : require("mongoose"),
+    Hope        : require("hope"),
     // Instance
-    run: function(callback) {
+    run         : function(callback) {
         _watermark();
         return require("./lib/server").run(callback);
     },
     // Instance
-    test: function(callback) {
+    test        : function(callback) {
         _watermark();
         require("./lib/test").run();
     }
