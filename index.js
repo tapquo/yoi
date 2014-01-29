@@ -8,7 +8,7 @@
 "use strict";
 
 var CoffeeScript = require("coffee-script");
-CoffeeScript.register();
+if(CoffeeScript.register) CoffeeScript.register();
 
 require("coffee-script");
 require("js-yaml");
