@@ -7,6 +7,9 @@
 */
 "use strict";
 
+var CoffeeScript = require("coffee-script");
+CoffeeScript.register();
+
 require("coffee-script");
 require("js-yaml");
 require("colors");
