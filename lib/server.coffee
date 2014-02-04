@@ -114,7 +114,7 @@ Server =
 
   start: ->
     promise = new Hope.Promise()
-    @instance.listen process.env.PORT or process.env.VCAP_APP_PORT or environment.server.port, =>
+    @instance.listen process.env.VCAP_APP_PORT or environment.server.port, =>
       callback.call callback, @instance if callback?
       promise.done null, true
     promise
