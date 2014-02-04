@@ -71,11 +71,10 @@ Appnima =
 
 
   api: (user_agent, method, url, token, parameters, callback) ->
+    headers = {}
+    headers["user-agent"] = user_agent if user_agent
     if token?
-      headers = authorization: "bearer #{token}"
-      headers["user-agent"] = user_agent if user_agent
-    else
-      headers = null
+      headers.authorization = "bearer #{token}"
     @_proxy method, url, parameters, headers, callback
 
   _proxy: (method, url, parameters = {}, headers = {}, callback) ->
