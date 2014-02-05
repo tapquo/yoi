@@ -7,19 +7,15 @@
 */
 "use strict";
 
+var CoffeeScript = require("coffee-script");
+if(CoffeeScript.register) CoffeeScript.register();
+
 require("coffee-script");
 require("js-yaml");
 require("colors");
 
-var fs = require("fs");
-var yaml = require('js-yaml');
-var path = require('path');
-
-var yoi = path.join(__dirname, '../../yoi.yml');
-global.config = yaml.safeLoad(fs.readFileSync(yoi, 'utf8'));
-
-var environment = path.join(__dirname, '../../environments/' + global.config.environment + ".yml");
-global.config.environment = yaml.safeLoad(fs.readFileSync(environment, 'utf8'));
+global.config = require("../../yoi.yml");
+global.config.environment = require("../../environments/" + global.config.environment + ".yml");
 
 var Yoi = {
     // Helpers
