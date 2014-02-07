@@ -10,8 +10,7 @@
 var CoffeeScript = require("coffee-script");
 if(CoffeeScript.register) CoffeeScript.register();
 
-require("coffee-script");
-require("js-yaml");
+yaml = require('js-yaml');
 require("colors");
 
 global.config = require("../../yoi.yml");
