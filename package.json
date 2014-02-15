@@ -1,12 +1,16 @@
 {
   "name"                : "yoi",
-  "version"             : "1.02.04",
+  "version"             : "1.02.15",
   "description"         : "Easy (but powerful) NodeJS Server",
   "homepage"            : "http://yoi.tapquo.com/",
   "keywords"            : ["util", "functional", "server", "browser"],
   "author"              : "Javi Jimenez <javi@tapquo.com>",
   "contributors"        : [
                             "Joseba Legarreta <joseba@tapquo.com>",
+                            "Catalina Oyaneder <catalina@tapquo.com>",
+                            "Oihane Merino <oihane@tapquo.com>",
+                            "Ignacio Olalde <ina@tapquo.com>",
+                            "Francisco Verdu <josefrancisco.verdu@gmail.com>",
                             "Inigo Gonzalez <inigo@tapquo.com>"],
   "dependencies": {
     "coffee-script"     : "*",

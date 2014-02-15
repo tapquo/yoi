@@ -7,18 +7,22 @@
 */
 "use strict";
 
-var CoffeeScript = require("coffee-script");
+var CoffeeScript= require("coffee-script");
+var fs          = require("fs");
+var yaml        = require('js-yaml');
+var path        = require('path');
+
+// Register CoffeeScript if exits
 if(CoffeeScript.register) CoffeeScript.register();
 
-var fs = require("fs");
-var yaml = require('js-yaml');
-var path = require('path');
+// Load YOI.config
+var config = path.join(__dirname, '../../yoi.yml');
+global.config = yaml.safeLoad(fs.readFileSync(config, 'utf8'));
 
-var yoi = path.join(__dirname, '../../yoi.yml');
-global.config = yaml.safeLoad(fs.readFileSync(yoi, 'utf8'));
-
+// Load YOI.environment
 var environment = path.join(__dirname, '../../environments/' + global.config.environment + ".yml");
 global.config.environment = yaml.safeLoad(fs.readFileSync(environment, 'utf8'));
+
 
 var Yoi = {
     // Helpers
@@ -52,7 +56,7 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v0.11.13'.grey);
+    console.log(' YOI'.rainbow, 'v1.12.15'.grey);
     console.log(' Easy (but powerful) NodeJS server');
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);
