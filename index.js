@@ -20,7 +20,9 @@ var config = path.join(__dirname, '../../yoi.yml');
 global.config = yaml.safeLoad(fs.readFileSync(config, 'utf8'));
 
 // Load YOI.environment
-var environment = path.join(__dirname, '../../environments/' + global.config.environment + ".yml");
+var environment;
+var parameter = process.argv[2] === undefined ? global.config.environment : process.argv[2];
+environment = path.join(__dirname, '../../environments/' + parameter + ".yml");
 global.config.environment = yaml.safeLoad(fs.readFileSync(environment, 'utf8'));
 
 
