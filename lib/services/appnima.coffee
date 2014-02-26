@@ -92,7 +92,6 @@ Appnima =
       result = JSON.parse body if body?
       if response.statusCode >= 400
         error = code: response.statusCode, message: result.message
-        result = null
       promise.done error, result
       callback.call callback, error, result if callback?
     promise
