@@ -11,6 +11,7 @@ YOI
 restify     = require "restify"
 fs          = require "fs"
 Hope        = require "hope"
+shell       = require "./helpers/shell"
 mongo       = require "./services/mongo"
 redis       = require "./services/redis"
 appnima     = require "./services/appnima"
@@ -47,7 +48,7 @@ Server =
       do @crons
     ]).then (error, value) =>
       if error
-        console.error "[X]".red, "ERROR".underline.red, error
+        shell "x", "red", "ERROR", error
       else
         do @events
         do @close
@@ -59,9 +60,10 @@ Server =
 
   assets: ->
     promise = new Hope.Promise()
-    if config.assets?
+    assets = config.environment.assets or config.assets
+    if assets?[0]?.folder?
       console.log "\n[ ]".yellow, "ASSETS".underline.yellow
-      for asset in config.assets
+      for asset in assets
         name = asset.folder or asset.file
         console.log "[\u2713]".yellow, "Loaded", name.underline.yellow, "cached for #{asset.maxage} seconds"
 
@@ -87,15 +89,20 @@ Server =
   services: ->
     promise = new Hope.Promise()
     tasks = []
+
     if environment.mongo?
-      tasks.push(=> mongo.open connection) for connection in environment.mongo
+      for connection in environment.mongo
+        tasks.push do (connection) -> -> mongo.open connection
     if environment.redis?
       tasks.push => redis.open environment.redis.host, environment.redis.port, environment.redis.password
     if environment.appnima?
       tasks.push => appnima.init environment.appnima
 
     if tasks.length > 0
-      Hope.shield(tasks).then (error, value) => promise.done error, value
+      console.log "\n[ ]".grey, "SERVICES".underline.grey
+      Hope.shield(tasks).then (error, value) =>
+        process.exit() if error
+        promise.done error, value
     else
       promise.done null, true
     promise
@@ -130,15 +137,22 @@ Server =
 
   events: ->
     @instance.on "error", (error) ->
-      console.error "[X]".red, "ERROR".underline.red, error
+      console.error "[x]".red, "ERROR".underline.red, error
     @instance.on "MethodNotAllowed", _unknownMethodHandler
     @instance.on "NotFound", _notFoundHandler
-    process.on "SIGTERM", => @instance.close()
-    process.on "SIGINT", => @instance.close()
+    @instance.on "uncaughtException", (request, response, route, error) ->
+      response.send "error": error.message
+      shell "x", "red", "#{route.spec.method}", "/#{route.spec.path}", "ERROR: #{error.message}"
+    process.on "SIGTERM", =>
+      @instance.close()
+    process.on "SIGINT", =>
+      @instance.close()
     process.on "exit", ->
       console.log "\n[·]".rainbow, "YOI".rainbow, "stopped correctly"
-    process.on "uncaughtException", (error) ->
-      console.error "[X]".red, "EXCEPTION".underline.red, error
+    process.on "uncaughtException", (error) =>
+      shell "x", "red", "YOI", error.message
+      process.exit()
+
 
   close: ->
     @instance.on "close", ->
