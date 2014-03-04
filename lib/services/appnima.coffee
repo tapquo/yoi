@@ -20,7 +20,7 @@ Appnima =
     promise = new Hope.Promise()
     if data.key? then @key = data.key
     if data.host? then @host = data.host
-    console.log "\n[\u2713]".magenta, "APPNIMA".underline.magenta, "connected to", "#{@host}".underline.magenta
+    console.log "[\u2713]".magenta, "APPNIMA".underline.magenta, "connected to", "#{@host}".underline.magenta
     promise.done null, true
     promise
 
@@ -92,6 +92,7 @@ Appnima =
       result = JSON.parse body if body?
       if response.statusCode >= 400
         error = code: response.statusCode, message: result.message
+        result = null
       promise.done error, result
       callback.call callback, error, result if callback?
     promise

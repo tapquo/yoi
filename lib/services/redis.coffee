@@ -14,21 +14,13 @@ Redis =
 
   open: (host, port, password) ->
     promise = new Hope.Promise()
-    if process.env.VCAP_SERVICES
-      #APPFOG Connection
-      env = JSON.parse(process.env.VCAP_SERVICES)
-      if env["redis-2.2"]?
-        credentials = env["redis-2.2"][0]["credentials"]
-        host = credentials.host
-        port = credentials.port
-        password = credentials.password
     @client = redis.createClient port, host
     @client.auth password if password?
     @client.on "error", (error) ->
-      console.log "\n[X]".red, "REDIS".underline.red, "error connecting: #{error}"
+      console.log "[x]".red, "REDIS".underline.red, "error connecting: #{error}"
       promise.done error, null
     @client.on "connect", ->
-      console.log "\n[\u2713]".red, "REDIS".underline.red, "listening at", "#{host}:#{port}".underline.red
+      console.log "[\u2713]".red, "REDIS".underline.red, "listening at", "#{host}:#{port}".underline.red
       promise.done null, true
     promise
 
@@ -47,11 +39,11 @@ Redis =
   expire: (key, time) -> @client.EXPIRE String(key), time
 
   remove: (key) -> @client.DEL String(key)
-  
+
   hgetall: (key, callback) -> @client.HGETALL String(key), callback
-  
+
   hdel: (key, field) -> @client.hdel String(key), field
-  
+
   hincrby: (key, field, increment) -> @client.HINCRBY String(key), field, increment
 
   run: (args...) ->

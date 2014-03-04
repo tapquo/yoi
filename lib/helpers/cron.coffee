@@ -6,7 +6,7 @@ YOI
 @namespace    lib/helpers/cron
 ###
 "use strict"
-
+shell   = require("./shell")
 CronJob = require("cron").CronJob
 
 class Cron
@@ -25,5 +25,9 @@ class Cron
     @instance.stop()
 
   execute: -> @
+
+  shell: (messages...) =>
+    shell "c", "grey", @cron.name, messages
+
 
 exports = module.exports = Cron

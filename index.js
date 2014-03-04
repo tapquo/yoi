@@ -2,8 +2,9 @@
 /*
     YOI
     @description  Easy (but powerful) NodeJS Server
-    @version      0.10.03
+    @version      1.03.04
     @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
+    @author       Catalina Oyaneder <catalina@tapquo.org> || @cataflu
 */
 "use strict";
 
@@ -15,20 +16,20 @@ var path        = require('path');
 // Register CoffeeScript if exits
 if(CoffeeScript.register) CoffeeScript.register();
 
-// Load YOI.config
-var config = path.join(__dirname, '../../yoi.yml');
-global.config = yaml.safeLoad(fs.readFileSync(config, 'utf8'));
+// Get endpoints
+var endpoint_file = process.argv[3] === undefined ? "yoi" : process.argv[3];
+var endpoint_path = path.join(__dirname, '../../' + endpoint_file + ".yml");
+global.config = yaml.safeLoad(fs.readFileSync(endpoint_path, 'utf8'));
 
-// Load YOI.environment
-var environment;
-var parameter = process.argv[2] === undefined ? global.config.environment : process.argv[2];
-environment = path.join(__dirname, '../../environments/' + parameter + ".yml");
-global.config.environment = yaml.safeLoad(fs.readFileSync(environment, 'utf8'));
-
+// Get environment
+var environment_name = process.argv[2] === undefined ? global.config.environment : process.argv[2];
+var environment_path = path.join(__dirname, '../../environments/' + environment_name + ".yml");
+global.config.environment = yaml.safeLoad(fs.readFileSync(environment_path, 'utf8'));
 
 var Yoi = {
     // Helpers
     Cron        : require("./lib/helpers/cron"),
+    Deploy      : require("./lib/helpers/deploy"),
     Model       : require("./lib/helpers/model"),
     Rest        : require("./lib/helpers/rest"),
     Site        : require("./lib/helpers/site"),
@@ -58,7 +59,7 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v1.12.15'.grey);
+    console.log(' YOI'.rainbow, 'v1.03.04'.grey);
     console.log(' Easy (but powerful) NodeJS server');
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);

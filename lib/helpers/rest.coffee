@@ -8,8 +8,8 @@ YOI
 "use strict"
 
 restify   = require "restify"
-moment    = require "moment"
 Model     = require "./model"
+shell     = require "./shell"
 # Configuration
 config = global.config
 
@@ -24,7 +24,8 @@ class Rest
       if !@request.params[param]?
         throw code: 400, message: "#{param} is required."
 
-  parameter: (name) -> @request.params[name] or null
+  parameter: (name) ->
+    @request.params[name] or null
 
   connectionIP: ->
     if @request.headers.hasOwnProperty "x-forwarded-for"
@@ -103,11 +104,8 @@ exports = module.exports = Rest
 
 _outputLog = (code, status, color="green") =>
   if config.environment.log?.response
-    console.log "[>]"[color], "#{_now()}".grey, "#{code}".underline[color], status
+    shell ">", color, code, status
 
 _inputLog = (request) ->
-  secured = "[Authenticated]" if request.session
-  console.log "\n[<]".blue, "#{_now()}".grey, "#{request.method}".underline.blue, request.path(), "#{secured}".grey
-
-_now = ->
-  moment().format("HH:mm:ss:SSS - MMM DD YYYY")
+  secured = if request.session then "AUTHENTICATED" else "NO-SESSION"
+  shell "<", "blue", request.method, request.path(), secured
