@@ -15,18 +15,18 @@ config        = global.config
 
 module.exports =
 
-  tasks : ->
+  tasks: ->
     promise = new Hope.Promise()
 
     tasks = config.environment.deploy or config.deploy
-    processes = (__process task for task in tasks)
+    processes = (process task for task in tasks)
     Hope.shield(processes).then (error, result) -> promise.done error, result
 
     promise
 
-__process = (command, args) -> ->
-  shell "T", "magenta", "COMMAND", command
-  promise = new Hope.Promise()
-  childProcess.exec command, args, (error, out, stdout) ->
-    promise.done error, out
-  promise
+  process: (command, args) -> ->
+    shell "T", "magenta", "COMMAND", command
+    promise = new Hope.Promise()
+    childProcess.exec command, args, (error, out, stdout) ->
+      promise.done error, out
+    promise
