@@ -19,7 +19,7 @@ module.exports =
     promise = new Hope.Promise()
 
     tasks = config.environment.deploy or config.deploy
-    processes = (process task for task in tasks)
+    processes = (@process task for task in tasks)
     Hope.shield(processes).then (error, result) -> promise.done error, result
 
     promise
