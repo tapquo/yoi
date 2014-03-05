@@ -19,12 +19,19 @@ module.exports =
     promise = new Hope.Promise()
 
     tasks = config.environment.deploy or config.deploy
-    processes = (@process task for task in tasks)
+    processes = (@asyncProcess task for task in tasks)
     Hope.shield(processes).then (error, result) -> promise.done error, result
 
     promise
 
-  process: (command, args) -> ->
+  process: (command, args) ->
+    shell "T", "magenta", "COMMAND", command
+    promise = new Hope.Promise()
+    childProcess.exec command, args, (error, out, stdout) ->
+      promise.done error, out
+    promise
+
+  asyncProcess: (command, args) -> ->
     shell "T", "magenta", "COMMAND", command
     promise = new Hope.Promise()
     childProcess.exec command, args, (error, out, stdout) ->
