@@ -17,14 +17,18 @@ var path        = require('path');
 if(CoffeeScript.register) CoffeeScript.register();
 
 // Get endpoints
-var endpoint_file = process.argv[3] === undefined ? "yoi" : process.argv[3];
+var endpoint_file = process.argv[2] === undefined ? "yoi" : process.argv[2];
 var endpoint_path = path.join(__dirname, '../../' + endpoint_file + ".yml");
 global.config = yaml.safeLoad(fs.readFileSync(endpoint_path, 'utf8'));
 
 // Get environment
-var environment_name = process.argv[2] === undefined ? global.config.environment : process.argv[2];
+var environment_name = process.argv[3] === undefined ? global.config.environment : process.argv[3];
 var environment_path = path.join(__dirname, '../../environments/' + environment_name + ".yml");
 global.config.environment = yaml.safeLoad(fs.readFileSync(environment_path, 'utf8'));
+
+// Get port
+var port = process.argv[4]
+if (port !== undefined && !isNaN(port)) global.config.environment.server.port = port;
 
 var Yoi = {
     // Helpers
@@ -59,7 +63,7 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v1.03.05'.grey);
+    console.log(' YOI'.rainbow, 'v1.03.05b'.grey);
     console.log(' Easy (but powerful) NodeJS server');
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);
