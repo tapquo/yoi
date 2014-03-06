@@ -9,7 +9,7 @@ YOI
 
 mongoose = require "mongoose"
 Hope     = require "hope"
-shell    = require "./shell"
+shell    = require "../helpers/shell"
 
 module.exports =
   connections: {}
