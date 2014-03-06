@@ -1,6 +1,6 @@
 {
   "name"                : "yoi",
-  "version"             : "1.03.05e",
+  "version"             : "1.03.06",
   "description"         : "Easy (but powerful) NodeJS Server",
   "homepage"            : "http://yoi.tapquo.com/",
   "keywords"            : ["util", "functional", "server", "browser"],

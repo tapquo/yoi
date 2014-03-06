@@ -82,7 +82,7 @@ Server =
     @instance.use (req, res, next) ->
       _setCORS res
       do next
-    @instance.use _setSession
+    @instance.use _setSession if config.session?
     promise.done null, true
     promise
 
@@ -178,10 +178,14 @@ _notFoundHandler = (request, response) ->
 
 _setCORS = (response) ->
   response.header "Access-Control-Allow-Credentials", true
-  response.header "Access-Control-Allow-Headers", config.ALLOWED_HEADERS.join(", ")
-  response.header "Access-Control-Allow-Methods", config.ALLOWED_METHODS.join(", ")
-  response.header "Access-Control-Expose-Headers", config.EXPOSE_HEADERS.join(", ")
-  response.header "Access-Control-Allow-Origin", config.ALLOW_ORIGIN
+  if config.ALLOWED_HEADERS?
+    response.header "Access-Control-Allow-Headers", config.ALLOWED_HEADERS.join(", ")
+  if config.ALLOWED_METHODS?
+    response.header "Access-Control-Allow-Methods", config.ALLOWED_METHODS.join(", ")
+  if config.EXPOSE_HEADERS?
+    response.header "Access-Control-Expose-Headers", config.EXPOSE_HEADERS.join(", ")
+  if config.ALLOW_ORIGIN?
+    response.header "Access-Control-Allow-Origin", config.ALLOW_ORIGIN
 
 _setSession = (request, res, next) ->
   rest = config.session.rest
