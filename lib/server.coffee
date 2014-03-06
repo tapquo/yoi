@@ -110,8 +110,6 @@ Server =
   endpoints: ->
     promise = new Hope.Promise()
     console.log "\n[ ]".blue, "ENDPOINTS".underline.blue
-    url = "http://#{environment.server.host}"
-    url += ":#{environment.server.port}" if environment.server.port
     for type of config.endpoints
       for endpoint in config.endpoints[type]
         console.log "[\u2713]".blue, "Published endpoints in file", "#{type}/#{endpoint}".underline.blue
