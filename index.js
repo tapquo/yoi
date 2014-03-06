@@ -30,6 +30,9 @@ global.config.environment = yaml.safeLoad(fs.readFileSync(environment_path, 'utf
 var port = process.argv[4]
 if (port !== undefined && !isNaN(port)) global.config.environment.server.port = port;
 
+// Get TimeZone
+if (global.config.environment.server.timezone) process.env.TZ = global.config.environment.server.timezone;
+
 var Yoi = {
     // Helpers
     Cron        : require("./lib/helpers/cron"),
@@ -63,8 +66,14 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v1.03.06'.grey);
-    console.log(' Easy (but powerful) NodeJS server');
+    console.log(' YOI'.rainbow, 'v1.03.06'.white, 'Easy (but powerful) NodeJS server'.grey);
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);
+
+    var environment = global.config.environment.server;
+    console.log('[ ]'.green, 'ENVIRONMENT'.green);
+    console.log('[✓]'.green, 'Type', environment.type.green.underline);
+    console.log('[✓]'.green, 'Host', environment.host.green.underline);
+    console.log('[✓]'.green, 'Port', environment.port.toString().green.underline);
+    if (environment.timezone) console.log('[✓]'.green, 'Timezone', environment.timezone.green.underline);
 };
