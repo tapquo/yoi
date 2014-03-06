@@ -9,9 +9,9 @@ YOI
 
 mongoose = require "mongoose"
 Hope     = require "hope"
+shell    = require "./shell"
 
-Mongo =
-
+module.exports =
   connections: {}
 
   open: (connection = {}) ->
@@ -27,11 +27,12 @@ Mongo =
       else
         console.log "[\u2713]".green, "MONGO.#{connection.name}".underline.green, "listening at", "#{connection.host}:#{connection.port}/#{connection.db}".underline.green
         promise.done null, true
+    @connections[connection.name].connection.on "error", (error) ->
+      shell "[x]", "red", "MONGO", error
+      process.exit()
     promise
 
   close: ->
     for name of @connections
       @connections[name].connection.close ->
         console.log "[·]".green, "MONGO".underline.green, "Closed", "#{name}".underline.green ,"connection"
-
-module.exports = Mongo
