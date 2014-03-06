@@ -2,7 +2,7 @@
 /*
     YOI
     @description  Easy (but powerful) NodeJS Server
-    @version      1.03.04
+    @version      1.03.06c
     @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
     @author       Catalina Oyaneder <catalina@tapquo.org> || @cataflu
 */
@@ -66,14 +66,13 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v1.03.06b'.white, 'Easy (but powerful) NodeJS server'.grey);
+    console.log(' YOI'.rainbow, 'v1.03.06c'.white, 'Easy (but powerful) NodeJS server'.grey);
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);
 
     var environment = global.config.environment.server;
     console.log('[ ]'.green, 'ENVIRONMENT'.green);
-    console.log('[✓]'.green, 'Type', environment.type.green.underline);
-    console.log('[✓]'.green, 'Host', environment.host.green.underline);
-    console.log('[✓]'.green, 'Port', environment.port.toString().green.underline);
+    console.log('[✓]'.green, 'Environment', environment.type.green.underline);
+    console.log('[✓]'.green, 'Address', (environment.host + ":" + environment.port).green.underline );
     if (environment.timezone) console.log('[✓]'.green, 'Timezone', environment.timezone.green.underline);
 };
