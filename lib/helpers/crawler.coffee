@@ -52,8 +52,9 @@ class Crawler
     seconds = parseInt((new Date() - @time) / 1000)
     shell "⇣", "grey", "CRAWLER/#{@constructor.name}", "finished in #{seconds}s"
 
-  queue: (url, callback) ->
-    shell "⇢", "grey", "CRAWLER/#{@constructor.name}", url.replace("http://www.", "")
+  queue: (url, callback, log = true) ->
+    if log
+      shell "⇢", "grey", "CRAWLER/#{@constructor.name}", url.replace("http://www.", "")
     if @parsed_urls.indexOf(url) is -1 and @pending_urls.indexOf(url) is -1
       @queue_data[url] = data: url, callback: callback
       @pending_urls.push(url)
