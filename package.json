@@ -1,34 +1,68 @@
 {
-  "name"                : "yoi",
-  "version"             : "1.03.06e",
-  "description"         : "Easy (but powerful) NodeJS Server",
-  "homepage"            : "http://yoi.tapquo.com/",
-  "keywords"            : ["util", "functional", "server", "browser"],
-  "author"              : "Javi Jimenez <javi@tapquo.com>",
-  "contributors"        : [
-                            "Catalina Oyaneder <catalina@tapquo.com>",
-                            "Oihane Merino <oihane@tapquo.com>",
-                            "Ignacio Olalde <ina@tapquo.com>",
-                            "Francisco Verdu <josefrancisco.verdu@gmail.com>",
-                            "Joseba Legarreta <joseba@tapquo.com>",
-                            "Inigo Gonzalez <inigo@tapquo.com>"],
+  "name": "yoi",
+  "version": "1.4.22",
+  "description": "Easy (but powerful) NodeJS Server",
+  "homepage": "http://yoi.tapquo.com/",
+  "keywords": [
+    "util",
+    "functional",
+    "server",
+    "browser"
+  ],
+  "author": {
+    "name": "Javi Jimenez",
+    "email": "javi@tapquo.com"
+  },
+  "contributors": [
+    {
+      "name": "Catalina Oyaneder",
+      "email": "catalina@tapquo.com"
+    },
+    {
+      "name": "Oihane Merino",
+      "email": "oihane@tapquo.com"
+    },
+    {
+      "name": "Francisco Verdu",
+      "email": "josefrancisco.verdu@gmail.com"
+    },
+    {
+      "name": "Joseba Legarreta",
+      "email": "joseba@tapquo.com"
+    },
+    {
+      "name": "Ignacio Olalde",
+      "email": "ina@tapquo.com"
+    },
+    {
+      "name": "Inigo Gonzalez",
+      "email": "inigo@tapquo.com"
+    }
+  ],
   "dependencies": {
-    "coffee-script"     : "*",
-    "restify"           : "git://github.com/tapquo/node-restify",
-    "cookie"            : "*",
-    "cron"              : "*",
-    "time"              : "*",
-    "jade"              : "*",
-    "async"             : "*",
-    "mongoose"          : "*",
-    "redis"             : "*",
-    "request"           : "*",
-    "socket.io-client"  : "0.9.16",
-    "js-yaml"           : "*",
-    "colors"            : "*",
-    "moment"            : "*",
-    "hope"              : "*"},
-  "main"                : "./index.js",
-  "engines"             : {
-    "node"              : "*" }
+    "coffee-script": "*",
+    "restify": "git://github.com/tapquo/node-restify",
+    "cookie": "*",
+    "cron": "*",
+    "time": "*",
+    "jade": "*",
+    "async": "*",
+    "mongoose": "*",
+    "redis": "*",
+    "request": "*",
+    "socket.io-client": "0.9.16",
+    "js-yaml": "*",
+    "colors": "*",
+    "moment": "*",
+    "hope": "*",
+    "cheerio": "*"
+  },
+  "main": "./index.js",
+  "engines": {
+    "node": "*"
+  },
+  "readme": "# YOI\n## Easy (but powerful) NodeJS Server\n",
+  "readmeFilename": "readme.md",
+  "_id": "yoi@1.3.6-e",
+  "_from": "yoi@*"
 }

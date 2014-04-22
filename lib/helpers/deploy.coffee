@@ -25,14 +25,14 @@ module.exports =
     promise
 
   process: (command, args) ->
-    shell "T", "magenta", "COMMAND", command
+    shell "✓", "magenta", "COMMAND", command
     promise = new Hope.Promise()
     childProcess.exec command, args, (error, out, stdout) ->
       promise.done error, out
     promise
 
   asyncProcess: (command, args) -> ->
-    shell "T", "magenta", "COMMAND", command
+    shell "✓", "magenta", "COMMAND", command
     promise = new Hope.Promise()
     childProcess.exec command, args, (error, out, stdout) ->
       promise.done error, out

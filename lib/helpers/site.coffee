@@ -11,6 +11,7 @@ Rest   = require "./rest"
 fs     = require "fs"
 jade   = require "jade"
 Cookie = require "cookie"
+shell     = require "./shell"
 # Configuration
 config = global.config
 
@@ -26,6 +27,10 @@ class Site extends Rest
   cookie: (key) -> @cookies[key]
 
   run: (html, cookie, code = 200) ->
+    if config.environment.log?.response
+      arrow = if cookie then "⇒" else "⇢"
+      shell arrow, "green", code, "#{html.length} bytes"
+
     headers = "Content-Type": "text/html"
     @response.writeHead code, _setCookieInHeader(headers, cookie)
     @response.write html
@@ -50,6 +55,8 @@ class Site extends Rest
     @run html, cookie, code
 
   redirect: (url, cookie) ->
+    shell "↪", "green", "REDIRECT", url
+
     headers = "location": url
     @response.writeHead 302, _setCookieInHeader(headers, cookie)
     do @response.end

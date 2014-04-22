@@ -22,17 +22,17 @@ module.exports =
 
     @connections[connection.name] = mongoose.connect "mongodb://#{url}", (error, result) ->
       if error
-        console.log "[x]".green, "MONGO.#{connection.name}".underline.green, error.message
+        console.log "⚑".green, "MONGO/#{connection.name}".underline.green, error.message
         promise.done error, null
       else
-        console.log "[\u2713]".green, "MONGO.#{connection.name}".underline.green, "listening at", "#{connection.host}:#{connection.port}/#{connection.db}".underline.green
+        console.log "✓".green, "MONGO/#{connection.name}".underline.green, "listening at", "#{connection.host}:#{connection.port}/#{connection.db}".underline.green
         promise.done null, true
     @connections[connection.name].connection.on "error", (error) ->
-      shell "[x]", "red", "MONGO", error
+      shell "⚑", "red", "MONGO", error
       process.exit()
     promise
 
   close: ->
     for name of @connections
       @connections[name].connection.close ->
-        console.log "[·]".green, "MONGO".underline.green, "Closed", "#{name}".underline.green ,"connection"
+        console.log "▣".green, "MONGO/#{name}".underline.green, "closed connection"

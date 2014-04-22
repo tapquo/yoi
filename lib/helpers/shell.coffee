@@ -12,7 +12,7 @@ moment    = require "moment"
 
 module.exports = (label, color, code, messages...) ->
   messages = messages[0] if messages.length is 1
-  console.log "[#{label}]"[color], "#{__now()}".white, "#{code}".underline[color], messages
+  console.log "#{label}"[color], "#{__now()}".white, "#{code}".underline[color], messages
 
 __now = ->
   moment().format("DD MMM HH:mm:ss:SSS")

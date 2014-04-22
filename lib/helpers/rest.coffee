@@ -104,8 +104,9 @@ exports = module.exports = Rest
 
 _outputLog = (code, status, color="green") =>
   if config.environment.log?.response
-    shell ">", color, code, status
+    shell "⇢", color, code, status
 
 _inputLog = (request) ->
-  secured = if request.session then "AUTHENTICATED" else "NO-SESSION"
-  shell "<", "blue", request.method, request.path(), secured
+  if config.environment.log?.request
+    arrow = if request.session then "⇐" else "⇠"
+    shell arrow, "blue", request.method, request.path()

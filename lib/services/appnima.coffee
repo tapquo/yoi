@@ -20,7 +20,7 @@ Appnima =
     promise = new Hope.Promise()
     if data.key? then @key = data.key
     if data.host? then @host = data.host
-    console.log "[\u2713]".magenta, "APPNIMA".underline.magenta, "connected to", "#{@host}".underline.magenta
+    console.log "✓".magenta, "APPNIMA".underline.magenta, "connected to", "#{@host}".underline.magenta
     promise.done null, true
     promise
 

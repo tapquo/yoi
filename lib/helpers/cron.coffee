@@ -12,22 +12,23 @@ CronJob = require("cron").CronJob
 class Cron
 
   constructor: (@cron) ->
-    console.log "[\u2713]".grey, "#{cron.name}".underline.grey, "at #{cron.schedule}"
-
+    console.log "✓".grey, "#{cron.name}".underline.grey, "at #{cron.schedule}"
     @instance = new CronJob
       cronTime  : cron.schedule,
-      onTick    : @execute,
+      onTick    : @start,
       start     : true,
       timeZone  : (cron.timeZone) or "Europe/Madrid"
 
+  start: =>
+    @time = new Date()
+    shell "⇡", "grey", "CRON/#{@constructor.name}", "started"
+    do @execute
+
   stop: ->
-    console.log "[·]".grey, "CRON".underline.grey, "named", "#{@cron.name}".underline.grey, "stopped"
+    console.log "▣".grey, "CRON/#{@constructor.name}".underline.grey, "stopped"
     @instance.stop()
 
-  execute: -> @
-
-  shell: (messages...) =>
-    shell "c", "grey", @cron.name, messages
+  execute: ->
 
 
 exports = module.exports = Cron

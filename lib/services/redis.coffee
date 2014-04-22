@@ -12,20 +12,20 @@ Hope  = require "hope"
 
 Redis =
 
-  open: (host, port, password) ->
+  open: (@host, @port, password) ->
     promise = new Hope.Promise()
-    @client = redis.createClient port, host
+    @client = redis.createClient @port, @host
     @client.auth password if password?
     @client.on "error", (error) ->
-      console.log "[x]".red, "REDIS".underline.red, "error connecting: #{error}"
+      console.log "⚑".red, "REDIS".underline.red, "error connecting: #{error}"
       promise.done error, null
     @client.on "connect", ->
-      console.log "[\u2713]".red, "REDIS".underline.red, "listening at", "#{host}:#{port}".underline.red
+      console.log "✓".red, "REDIS".underline.red, "listening at", "#{@host}:#{@port}".underline.red
       promise.done null, true
     promise
 
   close: ->
-    console.log "[·]".red, "REDIS".underline.red, "Closed connection"
+    console.log "▣".red, "REDIS/#{@host}:#{@port}".underline.red, "closed connection"
     do @client.quit
 
   set: (key, value) -> @client.SET String(key), value

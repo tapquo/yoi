@@ -48,13 +48,13 @@ Server =
       do @crons
     ]).then (error, value) =>
       if error
-        shell "x", "red", "ERROR", error
+        shell "⚑", "red", "ERROR", error
       else
         do @events
         do @close
-        console.log "\n[\u2713]".rainbow, "YOI".rainbow, "listening at", "#{@instance.url}".rainbow
+        console.log "\n✓".rainbow, "YOI".rainbow, "listening at", "#{@instance.url}".rainbow
         if environment.https?
-          console.log "\n[\u2713]".rainbow, "YOI HTTPS".rainbow, "listening at", "#{@https_server.url}".rainbow
+          console.log "\n✓".rainbow, "YOI HTTPS".rainbow, "listening at", "#{@https_server.url}".rainbow
 
     @instance
 
@@ -62,10 +62,10 @@ Server =
     promise = new Hope.Promise()
     assets = config.environment.assets or config.assets
     if assets?[0]?.folder?
-      console.log "\n[ ]".yellow, "ASSETS".underline.yellow
+      console.log "\n■".yellow, "ASSETS".underline.yellow
       for asset in assets
         name = asset.folder or asset.file
-        console.log "[\u2713]".yellow, "Loaded", name.underline.yellow, "cached for #{asset.maxage} seconds"
+        console.log "✓".yellow, "Loaded", name.underline.yellow, "cached for #{asset.maxage} seconds"
 
         pattern = if asset.folder? then "/\/#{asset.folder}\/.*/" else "/#{asset.file}"
         @instance.get pattern, restify.serveStatic
@@ -99,7 +99,7 @@ Server =
       tasks.push => appnima.init environment.appnima
 
     if tasks.length > 0
-      console.log "\n[ ]".grey, "SERVICES".underline.grey
+      console.log "\n■".grey, "SERVICES".underline.grey
       Hope.shield(tasks).then (error, value) =>
         process.exit() if error
         promise.done error, value
@@ -109,10 +109,10 @@ Server =
 
   endpoints: ->
     promise = new Hope.Promise()
-    console.log "\n[ ]".blue, "ENDPOINTS".underline.blue
+    console.log "\n■".blue, "ENDPOINTS".underline.blue
     for type of config.endpoints
       for endpoint in config.endpoints[type]
-        console.log "[\u2713]".blue, "Published endpoints in file", "#{type}/#{endpoint}".underline.blue
+        console.log "✓".blue, "Published endpoints in file", "#{type}/#{endpoint}".underline.blue
         require("#{folder}/endpoints/#{type}/#{endpoint}") @instance
     promise.done null, true
     promise
@@ -127,9 +127,9 @@ Server =
   crons: ->
     promise = new Hope.Promise()
     if config.crons?
-      console.log "\n[ ]".grey, "CRONS".underline.grey
+      console.log "\n■".grey, "CRONS".underline.grey
       for cron in config.crons
-        crons.push new (require("#{folder}/crons/#{cron.file}")) cron
+        crons.push new (require("#{folder}/crons/#{cron.file}.coffee")) cron
     promise.done null, true
     promise
 
@@ -140,15 +140,15 @@ Server =
     @instance.on "NotFound", _notFoundHandler
     @instance.on "uncaughtException", (request, response, route, error) ->
       response.send "error": error.message
-      shell "x", "red", "#{route.spec.method}", "/#{route.spec.path}", "ERROR: #{error.message}"
+      shell "⚑", "red", "#{route.spec.method}", "/#{route.spec.path}", "ERROR: #{error.message}"
     process.on "SIGTERM", =>
       @instance.close()
     process.on "SIGINT", =>
       @instance.close()
     process.on "exit", ->
-      console.log "\n[·]".rainbow, "YOI".rainbow, "stopped correctly"
+      console.log "▣".rainbow, "YOI".rainbow, "stopped correctly"
     process.on "uncaughtException", (error) =>
-      shell "x", "red", "YOI", error.message
+      shell "⚑", "red", "YOI", error.message
       process.exit()
 
 

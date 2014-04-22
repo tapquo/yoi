@@ -2,7 +2,7 @@
 /*
     YOI
     @description  Easy (but powerful) NodeJS Server
-    @version      1.03.06c
+    @version      1.04.22
     @author       Javi Jimenez Villar <javi@tapquo.org> || @soyjavi
     @author       Catalina Oyaneder <catalina@tapquo.org> || @cataflu
 */
@@ -35,6 +35,7 @@ if (global.config.environment.server.timezone) process.env.TZ = global.config.en
 
 var Yoi = {
     // Helpers
+    Crawler     : require("./lib/helpers/crawler"),
     Cron        : require("./lib/helpers/cron"),
     Deploy      : require("./lib/helpers/deploy"),
     Model       : require("./lib/helpers/model"),
@@ -49,6 +50,7 @@ var Yoi = {
     // Facade
     Mongoose    : require("mongoose"),
     Hope        : require("hope"),
+    $           : require("cheerio"),
     // Instance
     run         : function(callback) {
         _watermark();
@@ -66,13 +68,13 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v1.03.06e'.white, 'Easy (but powerful) NodeJS server'.grey);
+    console.log(' YOI'.rainbow, 'v1.04.22'.white, 'Easy (but powerful) NodeJS server'.grey);
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);
 
     var environment = global.config.environment.server;
-    console.log('[ ]'.green, 'ENVIRONMENT'.green);
-    console.log('[✓]'.green, 'Environment', environment.type.green.underline);
-    console.log('[✓]'.green, 'Address', (environment.host + ":" + environment.port).green.underline );
-    if (environment.timezone) console.log('[✓]'.green, 'Timezone', environment.timezone.green.underline);
+    console.log('■'.green, 'ENVIRONMENT'.green.underline);
+    console.log('✓'.green, 'Environment', environment.type.green.underline);
+    console.log('✓'.green, 'Address', (environment.host + ":" + environment.port).green.underline );
+    if (environment.timezone) console.log('✓'.green, 'Timezone', environment.timezone.green.underline);
 };
