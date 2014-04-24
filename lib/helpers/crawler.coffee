@@ -43,14 +43,18 @@ class Crawler
       @queue url, callback for url in urls
       @working = true
       @_checkQueue()
+    else
+      shell "⇡", "red", "CRAWLER/#{@constructor.name}", " still working."
 
   stop: ->
     console.log "▣".grey, "CRAWLER/#{@constructor.name}".underline.grey, "stopped"
     @instance.stop()
+    @working = false
 
   finish: ->
     seconds = parseInt((new Date() - @time) / 1000)
     shell "⇣", "grey", "CRAWLER/#{@constructor.name}", "finished in #{seconds}s"
+    @working = false
 
   queue: (url, callback, log = true) ->
     if log
@@ -80,7 +84,6 @@ class Crawler
 
     if @current_threads is 0
       do @finish
-      @working = false
 
   _makeRequest: (data, callback) ->
     data.headers = data.headers or @options.headers
