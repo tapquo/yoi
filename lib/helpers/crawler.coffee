@@ -17,6 +17,7 @@ class Crawler
     headers    : "user-agent": "request"
     max_threads: 40
 
+
   working: false
   time   : 0
 
@@ -86,7 +87,10 @@ class Crawler
       do @finish
 
   _makeRequest: (data, callback) ->
-    data.headers = data.headers or @options.headers
+    data =
+      url     : data
+      headers : @options.headers
+
     data.encoding = "binary" or @options.encoding
     request data, callback
     return
