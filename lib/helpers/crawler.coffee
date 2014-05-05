@@ -14,7 +14,8 @@ CronJob = require("cron").CronJob
 class Crawler
 
   options:
-    headers    : "user-agent": "request"
+    headers    :
+      "user-agent": "request"
     max_threads: 40
 
 
@@ -90,8 +91,9 @@ class Crawler
     data =
       url     : data
       headers : @options.headers
+      encoding: "utf-8"
+      # data.encoding = "binary" or @options.encoding
 
-    data.encoding = "binary" or @options.encoding
     request data, callback
     return
 
