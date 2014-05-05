@@ -23,7 +23,7 @@ global.config = yaml.safeLoad(fs.readFileSync(endpoint_path, 'utf8'));
 
 // Get environment
 var environment_name = process.argv[3] === undefined ? global.config.environment : process.argv[3];
-var environment_path = path.join(__dirname, '../../environments/' + environment_name + ".yml");
+var environment_path = path.join(__dirname, '../../yoi/environments/' + environment_name + ".yml");
 global.config.environment = yaml.safeLoad(fs.readFileSync(environment_path, 'utf8'));
 
 // Get port
@@ -68,7 +68,7 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v1.04.05'.white, 'Easy (but powerful) NodeJS server'.grey);
+    console.log(' YOI'.rainbow, 'v1.05.06'.white, 'Easy (but powerful) NodeJS server'.grey);
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);
 

@@ -20,7 +20,7 @@ Site        = require "./helpers/site"
 # Configuration
 config      = global.config
 environment = global.config.environment
-folder      = "../../../"
+folder      = "../../../yoi/"
 crons       = []
 
 Server =
@@ -69,7 +69,7 @@ Server =
 
         pattern = if asset.folder? then "/\/#{asset.folder}\/.*/" else "/#{asset.file}"
         @instance.get pattern, restify.serveStatic
-            directory  : "assets/"
+            directory  : "yoi/assets/"
             maxAge     : asset.maxage or 0
     promise.done null, true
     promise
@@ -113,7 +113,7 @@ Server =
     for type of config.endpoints
       for endpoint in config.endpoints[type]
         console.log "✓".blue, "Published endpoints in file", "#{type}/#{endpoint}".underline.blue
-        require("#{folder}/endpoints/#{type}/#{endpoint}") @instance
+        require("#{folder}/#{type}/#{endpoint}") @instance
     promise.done null, true
     promise
 

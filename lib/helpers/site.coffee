@@ -47,7 +47,7 @@ class Site extends Rest
       catch e
         page = "h1 404 - Not found"
 
-    properties.basedir = config.templates
+    properties.basedir = config.templates or "yoi/www/templates"
     properties.layout = false
     properties.pretty = false
 
