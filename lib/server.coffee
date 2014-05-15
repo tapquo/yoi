@@ -33,6 +33,7 @@ Server =
       @instance = restify.createServer https_options
     else
       @instance = restify.createServer()
+    @instance.pre(restify.pre.sanitizePath())
 
     Hope.shield([=>
       do @assets
