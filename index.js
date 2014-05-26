@@ -50,6 +50,7 @@ var Yoi = {
     // Facade
     Mongoose    : require("mongoose"),
     Hope        : require("hope"),
+    Restify     : require("restify"),
     $           : require("cheerio"),
     // Instance
     run         : function(callback) {
@@ -68,7 +69,7 @@ module.exports = Yoi;
 var _watermark = function() {
     process.stdout.write('\u001B[2J\u001B[0;0f');
     console.log('================================================================================'.rainbow);
-    console.log(' YOI'.rainbow, 'v1.05.07'.white, 'Easy (but powerful) NodeJS server'.grey);
+    console.log(' YOI'.rainbow, 'v1.05.26'.white, 'Easy (but powerful) NodeJS server'.grey);
     console.log('', 'http://yoi.tapquo.com'.underline.blue);
     console.log('================================================================================'.rainbow);
 
