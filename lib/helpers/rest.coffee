@@ -23,7 +23,6 @@ class Rest
     success = true
     for param in parameters
       if !@request.params[param]?
-       throw code: 400, message: "#{param} is required."
        success = false
        @exception 400, "#{param} is required."
        break
