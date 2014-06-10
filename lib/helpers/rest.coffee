@@ -21,11 +21,10 @@ class Rest
 
   required: (parameters = []) ->
     success = true
-    for param in parameters
-      if !@request.params[param]?
-        success = false
-        @exception 400, "#{param} is required."
-        break
+    for param in parameters when not @request.params[param]?
+      success = false
+      @exception 400, "#{param} is required."
+      break
     success
 
   parameter: (name) ->
