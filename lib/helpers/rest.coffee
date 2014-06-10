@@ -20,9 +20,13 @@ class Rest
     _inputLog @request if config.environment.log?.request
 
   required: (parameters = []) ->
+    success = true
     for param in parameters
       if !@request.params[param]?
-        throw code: 400, message: "#{param} is required."
+        success = false
+        @exception 400, "#{param} is required."
+        break
+    success
 
   parameter: (name) ->
     @request.params[name] or null
