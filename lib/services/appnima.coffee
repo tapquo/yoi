@@ -27,12 +27,13 @@ Appnima =
   subscribe: (mail, callback) ->
     @_proxy "POST", "user/subscription", {mail: mail}, {Authorization: "basic #{@key}"}, callback
 
-  signup: (user_agent, mail, password, username, callback) ->
+  signup: (user_agent, mail, password, username, name, callback) ->
     promise = new Hope.Promise()
     @headers = Authorization: "basic #{@key}"
     @headers["user-agent"] = user_agent if user_agent
 
     parameters = mail: mail, password: password, username: username
+    parameters.name = name if name?
     Hope.shield([=>
       @_proxy "POST", "user/signup", parameters, @headers
     , (error, signup) =>
