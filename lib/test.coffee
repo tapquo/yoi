@@ -12,12 +12,15 @@ restify     = require "restify"
 fs          = require "fs"
 Hope        = require "hope"
 moment      = require "moment"
+yaml        = require "js-yaml"
+path        = require "path"
+
 # Configuration
 folder      = "../../../"
-global.test = require "../../../yoitest.yml"
+test_path   = path.join __dirname, "#{folder}yoitest.yml"
+global.test = yaml.safeLoad(fs.readFileSync(test_path, 'utf8'))
 
 Test =
-
   run: () ->
     tests = []
     for file in test.files
