@@ -32,5 +32,5 @@ module.exports =
 
   close: ->
     for name of @connections
-      @connections[name].connection.close ->
+      @connections[name].close ->
         console.log "▣".green, "MONGO/#{name}".underline.green, "closed connection"
