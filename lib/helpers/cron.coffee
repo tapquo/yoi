@@ -11,7 +11,7 @@ CronJob = require("cron").CronJob
 
 class Cron
 
-  constructor: (@cron) ->
+  constructor: (cron) ->
     console.log "✓".grey, "#{cron.name}".underline.grey, "at #{cron.schedule}"
     @instance = new CronJob
       cronTime  : cron.schedule,
