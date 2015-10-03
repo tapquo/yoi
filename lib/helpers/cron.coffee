@@ -17,7 +17,7 @@ class Cron
       cronTime  : cron.schedule,
       onTick    : @start,
       start     : true,
-      timeZone  : (cron.timeZone) or "Europe/Madrid"
+      timeZone  : cron.timeZone or "Europe/Madrid"
 
   start: =>
     @time = new Date()
