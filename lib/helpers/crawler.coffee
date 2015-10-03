@@ -22,14 +22,14 @@ class Crawler
   working: false
   time   : 0
 
-  constructor: (@crawler) ->
-    console.log "✓".grey, "#{@crawler.name}".underline.grey, "at #{@crawler.schedule}"
+  constructor: (crawler) ->
+    console.log "✓".grey, "#{crawler.name}".underline.grey, "at #{crawler.schedule}"
     @events = {}
     @instance = new CronJob
-      cronTime  : @crawler.schedule,
+      cronTime  : crawler.schedule,
       onTick    : @start,
       start     : true,
-      timeZone  : @crawler.timeZone or "Europe/Madrid"
+      timeZone  : crawler.timeZone or "Europe/Madrid"
 
 
   # Instance public methods
