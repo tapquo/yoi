@@ -16,7 +16,7 @@ module.exports =
 
   open: (connection = {}) ->
     promise = new Hope.Promise()
-    url = connection.host + ":" + connection.port + "/" + connection.db
+    url = connection.uri || connection.host + ":" + connection.port + "/" + connection.db
     if connection.user and connection.password
       url = connection.user + ":" + connection.password + "@" + url
 
@@ -26,7 +26,8 @@ module.exports =
       promise.done true, null
       process.exit()
     @connections[connection.name].on "connected", (error) ->
-      console.log "✓".green, "MONGO/#{connection.name}".underline.green, "listening at", "#{connection.host}:#{connection.port}/#{connection.db}".underline.green
+      console.log "✓".green, "MONGO/#{connection.name}".underline.green, "listening at",
+        "#{url.replace(/(?:mongodb:\/\/(?:[^@]*@)?)(.+)/, "$1")}".underline.green
       promise.done null, true
     promise
 

@@ -24,7 +24,20 @@ global.config = yaml.safeLoad(fs.readFileSync(endpoint_path, 'utf8'));
 // Get environment
 var environment_name = process.argv[3] === undefined ? global.config.environment : process.argv[3];
 var environment_path = path.join(__dirname, '../../yoi/environments/' + environment_name + ".yml");
-global.config.environment = yaml.safeLoad(fs.readFileSync(environment_path, 'utf8'));
+
+// Inject environment vars on environment config
+function inject_variables(file) {
+  return file.replace(/#{(.+)\}/g, function(match, code){
+    code = code.split('.');
+    var base = new Function("return "+code.shift()+";")();
+    for (var i = 0, len = code.length; i < len; i++) {
+      base = base[code[i]];
+    }
+    return base;
+  });
+}
+
+global.config.environment = yaml.safeLoad(inject_variables(fs.readFileSync(environment_path, 'utf8')));
 
 // Get port
 var port = process.argv[4]
