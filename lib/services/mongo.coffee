@@ -16,7 +16,7 @@ module.exports =
 
   open: (connection = {}) ->
     promise = new Hope.Promise()
-    url = connection.uri || connection.host + ":" + connection.port + "/" + connection.db
+    url = connection.url || connection.host + ":" + connection.port + "/" + connection.db
     if connection.user and connection.password
       url = connection.user + ":" + connection.password + "@" + url
 
