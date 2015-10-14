@@ -9,22 +9,24 @@
 "use strict";
 
 var CoffeeScript= require("coffee-script");
-var fs          = require("fs");
-var yaml        = require('js-yaml');
-var path        = require('path');
+var path        = require("path");
+
+if(CoffeeScript.register) CoffeeScript.register();
+
+var yaml        = require("./lib/helpers/yaml");
 
 // Register CoffeeScript if exits
-if(CoffeeScript.register) CoffeeScript.register();
 
 // Get endpoints
 var endpoint_file = process.argv[2] === undefined ? "yoi" : process.argv[2];
 var endpoint_path = path.join(__dirname, '../../' + endpoint_file + ".yml");
-global.config = yaml.safeLoad(fs.readFileSync(endpoint_path, 'utf8'));
+global.config = yaml(endpoint_path);
 
 // Get environment
 var environment_name = process.argv[3] === undefined ? global.config.environment : process.argv[3];
 var environment_path = path.join(__dirname, '../../yoi/environments/' + environment_name + ".yml");
-global.config.environment = yaml.safeLoad(fs.readFileSync(environment_path, 'utf8'));
+
+global.config.environment = yaml(environment_path, 'utf8');
 
 // Get port
 var port = process.argv[4]
